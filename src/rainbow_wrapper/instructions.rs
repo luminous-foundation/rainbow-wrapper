@@ -1301,7 +1301,7 @@ macro_rules! var {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x66);
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&typ));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
@@ -1319,7 +1319,7 @@ macro_rules! var {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x68);
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&typ));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
@@ -1588,7 +1588,7 @@ macro_rules! alloc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7B);
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&typ));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$size));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
 
@@ -1608,7 +1608,7 @@ macro_rules! alloc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7D);
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&typ));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&size));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
 
@@ -1711,7 +1711,7 @@ macro_rules! callc {
 
                 res.push(0x84);
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$addr));
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&ret));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$args));
 
                 res
@@ -1722,7 +1722,7 @@ macro_rules! callc {
 
                 res.push(0x85);
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&addr));
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&ret));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$args));
 
                 res
@@ -1755,7 +1755,7 @@ macro_rules! callc {
 
                 res.push(0x88);
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$addr));
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&ret));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&args));
 
                 res
@@ -1766,7 +1766,7 @@ macro_rules! callc {
 
                 res.push(0x89);
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&addr));
-                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_type(&ret));
+                res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
                 res.append(&mut rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&args));
 
                 res

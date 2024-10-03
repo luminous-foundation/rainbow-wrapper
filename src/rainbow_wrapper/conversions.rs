@@ -41,26 +41,33 @@ pub fn to_immediate(value: &Types) -> Vec<u8> {
 }
 
 /// Convert a wrapped type into bytes.
-pub fn to_type(typ: &Type) -> Vec<u8> {
+pub fn to_type(typ: &Type) -> u8 {
+    match typ {
+        Type::VOID => 0x00,
+        Type::I8 => 0x01,
+        Type::I16 => 0x02,
+        Type::I32 => 0x03,
+        Type::I64 => 0x04,
+        Type::U8 => 0x05,
+        Type::U16 => 0x06,
+        Type::U32 => 0x07,
+        Type::U64 => 0x08,
+        Type::F16 => 0x09,
+        Type::F32 => 0x0A,
+        Type::F64 => 0x0B,
+        Type::POINTER => 0x0C,
+        Type::TYPE => 0x0D,
+        Type::STRUCT => 0x0E,
+        Type::NAME => 0x0F,
+    }
+}
+
+/// Converts a vector of types into bytes.
+pub fn to_types(typ: &Vec<Type>) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 
-    match typ {
-        Type::VOID => res.push(0x00),
-        Type::I8 => res.push(0x01),
-        Type::I16 => res.push(0x02),
-        Type::I32 => res.push(0x03),
-        Type::I64 => res.push(0x04),
-        Type::U8 => res.push(0x05),
-        Type::U16 => res.push(0x06),
-        Type::U32 => res.push(0x07),
-        Type::U64 => res.push(0x08),
-        Type::F16 => res.push(0x09),
-        Type::F32 => res.push(0x0A),
-        Type::F64 => res.push(0x0B),
-        Type::POINTER => res.push(0x0C),
-        Type::TYPE => res.push(0x0D),
-        Type::STRUCT => res.push(0x0E),
-        Type::NAME => res.push(0x0F),
+    for t in typ {
+        res.push(to_type(t));
     }
 
     return res;

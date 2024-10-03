@@ -46,7 +46,7 @@ pub enum Types {
     VARIDENT(String),
 
     /// A type.
-    TYPE(Type),
+    TYPE(Vec<Type>),
 }
 
 impl fmt::Display for Types {
@@ -58,7 +58,15 @@ impl fmt::Display for Types {
             Types::IDENT(v) => f.write_str(v),
             Types::NAME(v) => f.write_str(&("`".to_string() + v + "`")),
             Types::VARIDENT(v) => f.write_str(&("[".to_string() + v + "]")),
-            Types::TYPE(v) => f.write_str(&("(".to_string() + format!("{}", v).as_str() + ")")),
+            Types::TYPE(v) => {
+                let mut str: String = String::new();
+
+                for t in v {
+                    str += &format!("{}", t);
+                }
+
+                f.write_str(&("(".to_string() + str.as_str() + ")"))
+            }
         }
     }
 }
