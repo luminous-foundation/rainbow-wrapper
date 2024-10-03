@@ -1706,7 +1706,6 @@ macro_rules! callc {
     ($addr:expr, $ret:expr, $args:expr) => {
         match ($addr, $ret, $args) {
             (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::TYPE(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x84);
@@ -1717,7 +1716,6 @@ macro_rules! callc {
                 res
             }
             (Types::IDENT(addr), Types::TYPE(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x85);
@@ -1728,7 +1726,6 @@ macro_rules! callc {
                 res
             }
             (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x86);
@@ -1739,7 +1736,6 @@ macro_rules! callc {
                 res
             }
             (Types::IDENT(addr), Types::IDENT(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x87);
@@ -1750,7 +1746,6 @@ macro_rules! callc {
                 res
             }
             (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::TYPE(ret), Types::IDENT(args)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x88);
@@ -1761,7 +1756,6 @@ macro_rules! callc {
                 res
             }
             (Types::IDENT(addr), Types::TYPE(ret), Types::IDENT(args)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x89);
@@ -1772,7 +1766,6 @@ macro_rules! callc {
                 res
             }
             (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(ret), Types::IDENT(args)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x8A);
@@ -1783,7 +1776,6 @@ macro_rules! callc {
                 res
             }
             (Types::IDENT(addr), Types::IDENT(ret), Types::IDENT(args)) => {
-                
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x8B);

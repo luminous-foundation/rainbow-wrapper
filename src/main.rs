@@ -1,11 +1,12 @@
-use rainbow_wrapper::{add, rainbow_wrapper::types::{Type, Types}, var};
+use rainbow_wrapper::{add, rainbow_wrapper::{types::{Type, Types}, wrapper::Wrapper}, var};
 
 // testing!
 pub fn main() {
-    let mut res: Vec<u8> = Vec::new();
+    let mut res: Wrapper = Wrapper::new();
 
-    res.append(&mut var!(Types::TYPE(vec![Type::U8]), Types::NAME("sum".to_string())));
-    res.append(&mut add!(Types::UNSIGNED(1), Types::UNSIGNED(2), Types::IDENT("sum".to_string())));
+    res.push_string(&"test".to_string());
+    res.push_string(&"test".to_string());
+    res.push_string(&"test2".to_string());
 
-    println!("{res:?}");
+    println!("{:?}", res.emit());
 }
