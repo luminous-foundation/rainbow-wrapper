@@ -927,7 +927,7 @@ macro_rules! jl {
 
 // move instruction
 #[macro_export]
-/// Moves a value into a variable.
+/// Moves value `a` into variable `b`.
 /// 
 /// If a `VARIDENT` is provided, it will use the variable that the `VARIDENT` points to.
 /// 
