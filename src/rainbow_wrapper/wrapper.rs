@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use super::{conversions::{to_bytecode_string, to_immediate, to_types}, types::{Type, Types}};
+use super::{conversions::{to_bytecode_string, to_immediate, to_types}, types::{Type, Value}};
 
 pub struct Wrapper {
     pub bytes: Vec<u8>,
@@ -40,7 +40,7 @@ impl Wrapper {
             for str in self.strings.iter() {
                 res.append(&mut to_bytecode_string(str));
                 res.append(&mut to_types(&vec![Type::POINTER, Type::U8]));
-                res.append(&mut to_immediate(&Types::UNSIGNED(str.len() as u64)));
+                res.append(&mut to_immediate(&Value::UNSIGNED(str.len() as u64)));
                 res.append(&mut to_bytecode_string(str));
             }
         }

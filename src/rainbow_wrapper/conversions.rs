@@ -1,4 +1,4 @@
-use super::types::{Type, Types};
+use super::types::{Type, Value};
 
 /// Convert a string into a bytecode string.
 pub fn to_bytecode_string(text: &String) -> Vec<u8> {
@@ -18,19 +18,19 @@ pub fn to_bytecode_string(text: &String) -> Vec<u8> {
 
 // TODO: compress types if possible, we want to use the smallest bit-width at some point to make programs smaller
 /// Convert a wrapped value into bytes.
-pub fn to_immediate(value: &Types) -> Vec<u8> {
+pub fn to_immediate(value: &Value) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 
     match value {
-        Types::SIGNED(v) => {
+        Value::SIGNED(v) => {
             res.push(0x04);
             res.append(&mut v.to_be_bytes().to_vec());
         },
-        Types::UNSIGNED(v) => {
+        Value::UNSIGNED(v) => {
             res.push(0x08);
             res.append(&mut v.to_be_bytes().to_vec());
         },
-        Types::DECIMAL(v) => {
+        Value::DECIMAL(v) => {
             res.push(0x0B);
             res.append(&mut v.to_be_bytes().to_vec());
         },

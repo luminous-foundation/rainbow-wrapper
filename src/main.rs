@@ -1,4 +1,4 @@
-use rainbow_wrapper::{add, rainbow_wrapper::{types::{Type, Types}, wrapper::Wrapper}, var};
+use rainbow_wrapper::{add, rainbow_wrapper::{types::{Type, Value}, wrapper::Wrapper}, var};
 
 // testing!
 pub fn main() {

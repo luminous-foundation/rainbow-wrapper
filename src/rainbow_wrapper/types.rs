@@ -22,7 +22,7 @@ pub enum Type {
 }
 
 /// Rainbow wrapper types.
-pub enum Types {
+pub enum Value {
     /// A signed number.
     SIGNED(i64),
 
@@ -49,16 +49,16 @@ pub enum Types {
     TYPE(Vec<Type>),
 }
 
-impl fmt::Display for Types {
+impl fmt::Display for Value {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Types::SIGNED(v) => f.write_str(&v.to_string()),
-            Types::UNSIGNED(v) => f.write_str(&v.to_string()),
-            Types::DECIMAL(v) => f.write_str(&v.to_string()),
-            Types::IDENT(v) => f.write_str(v),
-            Types::NAME(v) => f.write_str(&("`".to_string() + v + "`")),
-            Types::VARIDENT(v) => f.write_str(&("[".to_string() + v + "]")),
-            Types::TYPE(v) => {
+            Value::SIGNED(v) => f.write_str(&v.to_string()),
+            Value::UNSIGNED(v) => f.write_str(&v.to_string()),
+            Value::DECIMAL(v) => f.write_str(&v.to_string()),
+            Value::IDENT(v) => f.write_str(v),
+            Value::NAME(v) => f.write_str(&("`".to_string() + v + "`")),
+            Value::VARIDENT(v) => f.write_str(&("[".to_string() + v + "]")),
+            Value::TYPE(v) => {
                 let mut str: String = String::new();
 
                 for t in v {
