@@ -931,7 +931,7 @@ macro_rules! jl {
 /// 
 /// If a `VARIDENT` is provided, it will use the variable that the `VARIDENT` points to.
 /// 
-/// arguments: `immediate/identifier/variable identifier`, `identifier/variable identifier`
+/// arguments: `immediate/identifier/variable_identifier`, `identifier/variable_identifier`
 macro_rules! mov {
     ($value:expr, $var:expr) => {
         match ($value, $var) {
@@ -1532,7 +1532,7 @@ macro_rules! r#mod {
 macro_rules! pmov {
     ($value:expr, $pointer:expr, $offset:expr) => {
         match ($value, $pointer, $offset) {
-            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(pointer), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(pointer), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x77);
@@ -1542,7 +1542,7 @@ macro_rules! pmov {
 
                 res
             }
-            (Type::IDENT(value), Type::IDENT(pointer), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
+            (Value::IDENT(value), Value::IDENT(pointer), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x78);
@@ -1552,7 +1552,7 @@ macro_rules! pmov {
 
                 res
             }
-            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(pointer), Type::IDENT(offset)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(pointer), Value::IDENT(offset)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x79);
@@ -1562,7 +1562,7 @@ macro_rules! pmov {
 
                 res
             }
-            (Type::IDENT(pointer), Type::IDENT(pointer), Type::IDENT(offset)) => {
+            (Value::IDENT(pointer), Value::IDENT(pointer), Value::IDENT(offset)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7A);
@@ -1584,7 +1584,7 @@ macro_rules! pmov {
 macro_rules! alloc {
     ($typ:expr, $size:expr, $var:expr) => {
         match ($typ, $size, $var) {
-            (Value::TYPE(typ), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(out)) => {
+            (Value::TYPE(typ), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7B);
@@ -1594,7 +1594,7 @@ macro_rules! alloc {
 
                 res
             }
-            (Value::IDENT(typ), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(out)) => {
+            (Value::IDENT(typ), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7C);
@@ -1604,7 +1604,7 @@ macro_rules! alloc {
 
                 res
             }
-            (Value::TYPE(typ), Value::IDENT(size), Type::IDENT(out)) => {
+            (Value::TYPE(typ), Value::IDENT(size), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7D);
@@ -1614,7 +1614,7 @@ macro_rules! alloc {
 
                 res
             }
-            (Value::IDENT(typ), Value::IDENT(size), Type::IDENT(out)) => {
+            (Value::IDENT(typ), Value::IDENT(size), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7E);
@@ -1640,7 +1640,7 @@ macro_rules! alloc {
 macro_rules! free {
     ($pointer:expr) => {
         match $pointer {
-            Type::IDENT(pointer) => {
+            Value::IDENT(pointer) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7F);
