@@ -16,7 +16,7 @@ macro_rules! nop {
 macro_rules! push {
     ($value:expr) => {
          match $value {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x01);
@@ -24,7 +24,7 @@ macro_rules! push {
 
                 res
             }
-            (Types::IDENT(name)) => {
+            (Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x02);
@@ -44,7 +44,7 @@ macro_rules! push {
 macro_rules! pop {
     ($out:expr) => {
         match $out {
-            (Types::IDENT(name)) => {
+            (Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x03);
@@ -64,7 +64,7 @@ macro_rules! pop {
 macro_rules! peek {
     ($value:expr, $out:expr) => {
          match ($value, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x04);
@@ -73,7 +73,7 @@ macro_rules! peek {
 
                 res
             }
-            (Types::IDENT(name), Types::IDENT(out)) => {
+            (Value::IDENT(name), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x05);
@@ -97,7 +97,7 @@ macro_rules! peek {
 macro_rules! call {
     ($func:expr) => {
         match $func {
-            (Types::NAME(func)) => {
+            (Value::NAME(func)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x06);
@@ -105,7 +105,7 @@ macro_rules! call {
 
                 res
             }
-            (Types::IDENT(func)) => {
+            (Value::IDENT(func)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x07);
@@ -127,7 +127,7 @@ macro_rules! call {
 macro_rules! add {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 // i do not know how to make the fully qualified names shorter
@@ -139,7 +139,7 @@ macro_rules! add {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x09);
@@ -149,7 +149,7 @@ macro_rules! add {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0A);
@@ -159,7 +159,7 @@ macro_rules! add {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0B);
@@ -181,7 +181,7 @@ macro_rules! add {
 macro_rules! sub {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0C);
@@ -191,7 +191,7 @@ macro_rules! sub {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0D);
@@ -201,7 +201,7 @@ macro_rules! sub {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0E);
@@ -211,7 +211,7 @@ macro_rules! sub {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0F);
@@ -233,7 +233,7 @@ macro_rules! sub {
 macro_rules! mul {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x10);
@@ -243,7 +243,7 @@ macro_rules! mul {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x11);
@@ -253,7 +253,7 @@ macro_rules! mul {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x12);
@@ -263,7 +263,7 @@ macro_rules! mul {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x13);
@@ -285,7 +285,7 @@ macro_rules! mul {
 macro_rules! div {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x14);
@@ -295,7 +295,7 @@ macro_rules! div {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x15);
@@ -305,7 +305,7 @@ macro_rules! div {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x16);
@@ -315,7 +315,7 @@ macro_rules! div {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x17);
@@ -339,7 +339,7 @@ macro_rules! div {
 macro_rules! jmp {
     ($index:expr) => {
         match $index {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x18);
@@ -347,7 +347,7 @@ macro_rules! jmp {
 
                 res
             }
-            (Types::IDENT(name)) => {
+            (Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x19);
@@ -369,7 +369,7 @@ macro_rules! jmp {
 macro_rules! jne {
     ($left:expr, $right:expr, $index:expr) => {
         match ($left, $right, $index) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1A);
@@ -379,7 +379,7 @@ macro_rules! jne {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1B);
@@ -389,7 +389,7 @@ macro_rules! jne {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1C);
@@ -399,7 +399,7 @@ macro_rules! jne {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1D);
@@ -409,7 +409,7 @@ macro_rules! jne {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1E);
@@ -419,7 +419,7 @@ macro_rules! jne {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1F);
@@ -429,7 +429,7 @@ macro_rules! jne {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x20);
@@ -439,7 +439,7 @@ macro_rules! jne {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x21);
@@ -463,7 +463,7 @@ macro_rules! jne {
 macro_rules! je {
     ($left:expr, $right:expr, $index:expr) => {
         match ($left, $right, $index) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x22);
@@ -473,7 +473,7 @@ macro_rules! je {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x23);
@@ -483,7 +483,7 @@ macro_rules! je {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x24);
@@ -493,7 +493,7 @@ macro_rules! je {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x25);
@@ -503,7 +503,7 @@ macro_rules! je {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x26);
@@ -513,7 +513,7 @@ macro_rules! je {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x27);
@@ -523,7 +523,7 @@ macro_rules! je {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x28);
@@ -533,7 +533,7 @@ macro_rules! je {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x29);
@@ -557,7 +557,7 @@ macro_rules! je {
 macro_rules! jge {
     ($left:expr, $right:expr, $index:expr) => {
         match ($left, $right, $index) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2A);
@@ -567,7 +567,7 @@ macro_rules! jge {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2B);
@@ -577,7 +577,7 @@ macro_rules! jge {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2C);
@@ -587,7 +587,7 @@ macro_rules! jge {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2D);
@@ -597,7 +597,7 @@ macro_rules! jge {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2E);
@@ -607,7 +607,7 @@ macro_rules! jge {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2F);
@@ -617,7 +617,7 @@ macro_rules! jge {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x30);
@@ -627,7 +627,7 @@ macro_rules! jge {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x31);
@@ -651,7 +651,7 @@ macro_rules! jge {
 macro_rules! jg {
     ($left:expr, $right:expr, $index:expr) => {
         match ($left, $right, $index) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x32);
@@ -661,7 +661,7 @@ macro_rules! jg {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x33);
@@ -671,7 +671,7 @@ macro_rules! jg {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x34);
@@ -681,7 +681,7 @@ macro_rules! jg {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x35);
@@ -691,7 +691,7 @@ macro_rules! jg {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x36);
@@ -701,7 +701,7 @@ macro_rules! jg {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x37);
@@ -711,7 +711,7 @@ macro_rules! jg {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x38);
@@ -721,7 +721,7 @@ macro_rules! jg {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x39);
@@ -745,7 +745,7 @@ macro_rules! jg {
 macro_rules! jle {
     ($left:expr, $right:expr, $index:expr) => {
         match ($left, $right, $index) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3A);
@@ -755,7 +755,7 @@ macro_rules! jle {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3B);
@@ -765,7 +765,7 @@ macro_rules! jle {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3C);
@@ -775,7 +775,7 @@ macro_rules! jle {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3D);
@@ -785,7 +785,7 @@ macro_rules! jle {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3E);
@@ -795,7 +795,7 @@ macro_rules! jle {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3F);
@@ -805,7 +805,7 @@ macro_rules! jle {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x40);
@@ -815,7 +815,7 @@ macro_rules! jle {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x41);
@@ -839,7 +839,7 @@ macro_rules! jle {
 macro_rules! jl {
     ($left:expr, $right:expr, $index:expr) => {
         match ($left, $right, $index) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x42);
@@ -849,7 +849,7 @@ macro_rules! jl {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x43);
@@ -859,7 +859,7 @@ macro_rules! jl {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x44);
@@ -869,7 +869,7 @@ macro_rules! jl {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x45);
@@ -879,7 +879,7 @@ macro_rules! jl {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x46);
@@ -889,7 +889,7 @@ macro_rules! jl {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x47);
@@ -899,7 +899,7 @@ macro_rules! jl {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x48);
@@ -909,7 +909,7 @@ macro_rules! jl {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(index)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(index)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x49);
@@ -935,7 +935,7 @@ macro_rules! jl {
 macro_rules! mov {
     ($value:expr, $var:expr) => {
         match ($value, $var) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4A);
@@ -944,7 +944,7 @@ macro_rules! mov {
 
                 res
             }
-            (Types::IDENT(value), Types::IDENT(out)) => {
+            (Value::IDENT(value), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4B);
@@ -953,7 +953,7 @@ macro_rules! mov {
 
                 res
             }
-            (Types::VARIDENT(value), Types::IDENT(out)) => {
+            (Value::VARIDENT(value), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4C);
@@ -962,7 +962,7 @@ macro_rules! mov {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::VARIDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::VARIDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4D);
@@ -971,7 +971,7 @@ macro_rules! mov {
 
                 res
             }
-            (Types::IDENT(value), Types::VARIDENT(out)) => {
+            (Value::IDENT(value), Value::VARIDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4E);
@@ -980,7 +980,7 @@ macro_rules! mov {
 
                 res
             }
-            (Types::VARIDENT(value), Types::VARIDENT(out)) => {
+            (Value::VARIDENT(value), Value::VARIDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4F);
@@ -1003,7 +1003,7 @@ macro_rules! mov {
 macro_rules! and {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x50);
@@ -1013,7 +1013,7 @@ macro_rules! and {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x51);
@@ -1023,7 +1023,7 @@ macro_rules! and {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x52);
@@ -1033,7 +1033,7 @@ macro_rules! and {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x53);
@@ -1055,7 +1055,7 @@ macro_rules! and {
 macro_rules! or {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x54);
@@ -1065,7 +1065,7 @@ macro_rules! or {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x55);
@@ -1075,7 +1075,7 @@ macro_rules! or {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x56);
@@ -1085,7 +1085,7 @@ macro_rules! or {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x57);
@@ -1107,7 +1107,7 @@ macro_rules! or {
 macro_rules! xor {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x58);
@@ -1117,7 +1117,7 @@ macro_rules! xor {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x59);
@@ -1127,7 +1127,7 @@ macro_rules! xor {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5A);
@@ -1137,7 +1137,7 @@ macro_rules! xor {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5B);
@@ -1159,7 +1159,7 @@ macro_rules! xor {
 macro_rules! not {
     ($value:expr, $out:expr) => {
         match $value, $out {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5C);
@@ -1168,7 +1168,7 @@ macro_rules! not {
 
                 res
             }
-            (Types::IDENT(value), Types::IDENT(out)) => {
+            (Value::IDENT(value), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5D);
@@ -1189,7 +1189,7 @@ macro_rules! not {
 macro_rules! lsh {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5E);
@@ -1199,7 +1199,7 @@ macro_rules! lsh {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5F);
@@ -1209,7 +1209,7 @@ macro_rules! lsh {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x60);
@@ -1219,7 +1219,7 @@ macro_rules! lsh {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x61);
@@ -1241,7 +1241,7 @@ macro_rules! lsh {
 macro_rules! rsh {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x62);
@@ -1251,7 +1251,7 @@ macro_rules! rsh {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x63);
@@ -1261,7 +1261,7 @@ macro_rules! rsh {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x64);
@@ -1271,7 +1271,7 @@ macro_rules! rsh {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x65);
@@ -1297,7 +1297,7 @@ macro_rules! rsh {
 macro_rules! var {
     ($type:expr, $name:expr) => {
         match ($type, $name) {
-            (Types::TYPE(typ), Types::NAME(name)) => {
+            (Value::TYPE(typ), Value::NAME(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x66);
@@ -1306,7 +1306,7 @@ macro_rules! var {
 
                 res
             }
-            (Types::IDENT(typ), Types::NAME(name)) => {
+            (Value::IDENT(typ), Value::NAME(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x67);
@@ -1315,7 +1315,7 @@ macro_rules! var {
 
                 res
             }
-            (Types::TYPE(typ), Types::IDENT(name)) => {
+            (Value::TYPE(typ), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x68);
@@ -1324,7 +1324,7 @@ macro_rules! var {
 
                 res
             }
-            (Types::IDENT(typ), Types::IDENT(name)) => {
+            (Value::IDENT(typ), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x69);
@@ -1352,7 +1352,7 @@ macro_rules! ret {
     };
     ($value:expr) => {
         match $value {
-            Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_) => {
+            Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6B);
@@ -1360,7 +1360,7 @@ macro_rules! ret {
 
                 res
             }
-            Types::IDENT(name) => {
+            Value::IDENT(name) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6C);
@@ -1382,7 +1382,7 @@ macro_rules! ret {
 macro_rules! deref {
     ($pointer:expr, $out:expr) => {
         match ($pointer, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(name)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6D);
@@ -1391,7 +1391,7 @@ macro_rules! deref {
 
                 res
             }
-            (Types::IDENT(pointer), Types::IDENT(name)) => {
+            (Value::IDENT(pointer), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6E);
@@ -1412,7 +1412,7 @@ macro_rules! deref {
 macro_rules! r#ref {
     ($pointer:expr, $out:expr) => {
         match ($pointer, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(name)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6F);
@@ -1421,7 +1421,7 @@ macro_rules! r#ref {
 
                 res
             }
-            (Types::IDENT(pointer), Types::IDENT(name)) => {
+            (Value::IDENT(pointer), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x70);
@@ -1444,7 +1444,7 @@ macro_rules! r#ref {
 macro_rules! inst {
     ($pointer:expr, $out:expr) => {
         match ($pointer, $out) {
-            (Types::NAME(r#struct), Types::IDENT(name)) => {
+            (Value::NAME(r#struct), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x71);
@@ -1453,7 +1453,7 @@ macro_rules! inst {
 
                 res
             }
-            (Types::IDENT(r#struct), Types::IDENT(name)) => {
+            (Value::IDENT(r#struct), Value::IDENT(name)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x72);
@@ -1476,7 +1476,7 @@ macro_rules! inst {
 macro_rules! r#mod {
     ($left:expr, $right:expr, $out:expr) => {
         match ($left, $right, $out) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x73);
@@ -1486,7 +1486,7 @@ macro_rules! r#mod {
 
                 res
             }
-            (Types::IDENT(left), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x74);
@@ -1496,7 +1496,7 @@ macro_rules! r#mod {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x75);
@@ -1506,7 +1506,7 @@ macro_rules! r#mod {
 
                 res
             }
-            (Types::IDENT(left), Types::IDENT(right), Types::IDENT(out)) => {
+            (Value::IDENT(left), Value::IDENT(right), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x76);
@@ -1532,7 +1532,7 @@ macro_rules! r#mod {
 macro_rules! pmov {
     ($value:expr, $pointer:expr, $offset:expr) => {
         match ($value, $pointer, $offset) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Type::IDENT(pointer), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(pointer), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x77);
@@ -1542,7 +1542,7 @@ macro_rules! pmov {
 
                 res
             }
-            (Type::IDENT(value), Type::IDENT(pointer), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Type::IDENT(value), Type::IDENT(pointer), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x78);
@@ -1552,7 +1552,7 @@ macro_rules! pmov {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Type::IDENT(pointer), Type::IDENT(offset)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(pointer), Type::IDENT(offset)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x79);
@@ -1584,7 +1584,7 @@ macro_rules! pmov {
 macro_rules! alloc {
     ($typ:expr, $size:expr, $var:expr) => {
         match ($typ, $size, $var) {
-            (Types::TYPE(typ), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Type::IDENT(out)) => {
+            (Value::TYPE(typ), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7B);
@@ -1594,7 +1594,7 @@ macro_rules! alloc {
 
                 res
             }
-            (Types::IDENT(typ), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Type::IDENT(out)) => {
+            (Value::IDENT(typ), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Type::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7C);
@@ -1604,7 +1604,7 @@ macro_rules! alloc {
 
                 res
             }
-            (Types::TYPE(typ), Types::IDENT(size), Type::IDENT(out)) => {
+            (Value::TYPE(typ), Value::IDENT(size), Type::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7D);
@@ -1614,7 +1614,7 @@ macro_rules! alloc {
 
                 res
             }
-            (Types::IDENT(typ), Types::IDENT(size), Type::IDENT(out)) => {
+            (Value::IDENT(typ), Value::IDENT(size), Type::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7E);
@@ -1653,7 +1653,7 @@ macro_rules! free {
     };
     ($pointer:expr, $size:expr) => {
         match ($pointer, $size) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x80);
@@ -1662,7 +1662,7 @@ macro_rules! free {
 
                 res
             }
-            (Types::IDENT(pointer), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(pointer), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x81);
@@ -1671,7 +1671,7 @@ macro_rules! free {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(size)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(size)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x82);
@@ -1680,7 +1680,7 @@ macro_rules! free {
 
                 res
             }
-            (Types::IDENT(pointer), Types::IDENT(size)) => {
+            (Value::IDENT(pointer), Value::IDENT(size)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x83);
@@ -1705,7 +1705,7 @@ macro_rules! free {
 macro_rules! callc {
     ($addr:expr, $ret:expr, $args:expr) => {
         match ($addr, $ret, $args) {
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::TYPE(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::TYPE(ret), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x84);
@@ -1715,7 +1715,7 @@ macro_rules! callc {
 
                 res
             }
-            (Types::IDENT(addr), Types::TYPE(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(addr), Value::TYPE(ret), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x85);
@@ -1725,7 +1725,7 @@ macro_rules! callc {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(ret), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x86);
@@ -1735,7 +1735,7 @@ macro_rules! callc {
 
                 res
             }
-            (Types::IDENT(addr), Types::IDENT(ret), Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_)) => {
+            (Value::IDENT(addr), Value::IDENT(ret), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x87);
@@ -1745,7 +1745,7 @@ macro_rules! callc {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::TYPE(ret), Types::IDENT(args)) => {
+            (Value::SIGNED(_) | ::UNSIGNED(_) | Value::DECIMAL(_), Value::TYPE(ret), Value::IDENT(args)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x88);
@@ -1755,7 +1755,7 @@ macro_rules! callc {
 
                 res
             }
-            (Types::IDENT(addr), Types::TYPE(ret), Types::IDENT(args)) => {
+            (Value::IDENT(addr), Value::TYPE(ret), Value::IDENT(args)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x89);
@@ -1765,7 +1765,7 @@ macro_rules! callc {
 
                 res
             }
-            (Types::SIGNED(_) | Types::UNSIGNED(_) | Types::DECIMAL(_), Types::IDENT(ret), Types::IDENT(args)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(ret), Value::IDENT(args)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x8A);
@@ -1775,7 +1775,7 @@ macro_rules! callc {
 
                 res
             }
-            (Types::IDENT(addr), Types::IDENT(ret), Types::IDENT(args)) => {
+            (Value::IDENT(addr), Value::IDENT(ret), Value::IDENT(args)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x8B);
