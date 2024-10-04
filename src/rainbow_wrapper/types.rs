@@ -43,7 +43,7 @@ pub enum Value {
     /// A variable identifier.
     /// 
     /// This variable holds the name of another variable to be used.
-    VARIDENT(String),
+    DYNAMIC_IDENT(String),
 
     /// A type.
     TYPE(Vec<Type>),
@@ -57,7 +57,7 @@ impl fmt::Display for Value {
             Value::DECIMAL(v) => f.write_str(&v.to_string()),
             Value::IDENT(v) => f.write_str(v),
             Value::NAME(v) => f.write_str(&("`".to_string() + v + "`")),
-            Value::VARIDENT(v) => f.write_str(&("[".to_string() + v + "]")),
+            Value::DYNAMIC_IDENT(v) => f.write_str(&("[".to_string() + v + "]")),
             Value::TYPE(v) => {
                 let mut str: String = String::new();
 

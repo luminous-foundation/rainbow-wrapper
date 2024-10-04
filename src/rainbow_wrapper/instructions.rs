@@ -962,7 +962,7 @@ macro_rules! mov {
 
                 res
             }
-            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::VARIDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::DYNAMIC_IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4D);
@@ -971,7 +971,7 @@ macro_rules! mov {
 
                 res
             }
-            (Value::IDENT(value), Value::VARIDENT(out)) => {
+            (Value::IDENT(value), Value::DYNAMIC_IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4E);
@@ -980,7 +980,7 @@ macro_rules! mov {
 
                 res
             }
-            (Value::VARIDENT(value), Value::VARIDENT(out)) => {
+            (Value::DYNAMIC_IDENT(value), Value::DYNAMIC_IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4F);
