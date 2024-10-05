@@ -4,7 +4,7 @@ use std::fmt::Formatter;
 /// Rainbow types.
 /// 
 /// Used with Value::TYPE
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Type {
     VOID,
     I8,
@@ -26,7 +26,7 @@ pub enum Type {
 
 /// Rainbow wrapper types.
 #[allow(non_camel_case_types)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Value {
     /// An identifier.
     /// 
