@@ -13,7 +13,7 @@ impl Wrapper {
         Wrapper { bytes: Vec::new(), strings: HashSet::new(), imports: HashSet::new() }
     }
 
-    pub fn push_bytes(&mut self, mut bytes: Vec<u8>) {
+    pub fn push(&mut self, mut bytes: Vec<u8>) {
         self.bytes.append(&mut bytes);
     }
 

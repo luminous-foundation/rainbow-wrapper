@@ -34,7 +34,7 @@ pub fn to_immediate(value: &Value) -> Vec<u8> {
             res.push(0x0B);
             res.append(&mut v.to_be_bytes().to_vec());
         },
-        _ => panic!("invalid type {} passed to to_immediate", value),
+        _ => panic!("Invalid type {value:?} given to `to_immediate`")
     }
 
     return res;

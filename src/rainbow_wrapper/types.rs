@@ -2,6 +2,9 @@ use core::fmt;
 use std::fmt::Formatter;
 
 /// Rainbow types.
+/// 
+/// Used with Value::TYPE
+#[derive(Debug)]
 pub enum Type {
     VOID,
     I8,
@@ -22,19 +25,14 @@ pub enum Type {
 }
 
 /// Rainbow wrapper types.
+#[allow(non_camel_case_types)]
+#[derive(Debug)]
 pub enum Value {
-    /// A signed number.
-    SIGNED(i64),
-
-    /// An unsigned number.
-    UNSIGNED(u64),
-
-    /// A decimal number.
-    DECIMAL(f64),
-
-    /// An identifier
+    /// An identifier.
     /// 
     /// Used to identify variables.
+    /// 
+    /// Use `ident!` to create this value.
     IDENT(String),
 
     /// A name of something.
@@ -43,19 +41,39 @@ pub enum Value {
     /// A variable identifier.
     /// 
     /// This variable holds the name of another variable to be used.
+    /// 
+    /// Used for certain cases of the `mov` instruction, where you need to access values in a dynamically named variable.
     DYNAMIC_IDENT(String),
 
     /// A type.
     TYPE(Vec<Type>),
+    
+    /// A signed number.
+    /// 
+    /// Used for numbers that are never negative.
+    /// 
+    /// Use `immediate!` to create this value.
+    SIGNED(i64),
+
+    /// An unsigned number.
+    /// 
+    /// Used for numbers that can be negative.
+    /// 
+    /// Use `immediate!` to create this value.
+    UNSIGNED(u64),
+
+    /// A decimal number.
+    /// 
+    /// Used for numbers that have a decimal.
+    /// 
+    /// Use `immediate!` to create this value.
+    DECIMAL(f64),
 }
 
 impl fmt::Display for Value {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Value::SIGNED(v) => f.write_str(&v.to_string()),
-            Value::UNSIGNED(v) => f.write_str(&v.to_string()),
-            Value::DECIMAL(v) => f.write_str(&v.to_string()),
-            Value::IDENT(v) => f.write_str(v),
+            Value::IDENT(s) => f.write_str(s),
             Value::NAME(v) => f.write_str(&("`".to_string() + v + "`")),
             Value::DYNAMIC_IDENT(v) => f.write_str(&("[".to_string() + v + "]")),
             Value::TYPE(v) => {
@@ -66,7 +84,10 @@ impl fmt::Display for Value {
                 }
 
                 f.write_str(&("(".to_string() + str.as_str() + ")"))
-            }
+            },
+            Value::SIGNED(v) => f.write_str(&v.to_string()),
+            Value::UNSIGNED(v) => f.write_str(&v.to_string()),
+            Value::DECIMAL(v) => f.write_str(&v.to_string()),
         }
     }
 }
