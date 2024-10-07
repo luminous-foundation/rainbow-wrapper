@@ -6,7 +6,7 @@ pub struct Arg {
     pub typ: Vec<Type>
 }
 
-pub fn generate_function(name: &String, args: Vec<Arg>, return_type: Vec<Type>, body: Vec<u8>) -> Vec<u8> {
+pub fn generate_function(name: &String, args: &Vec<Arg>, return_type: &Vec<Type>, body: &Vec<u8>) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 
     res.push(0xFF);
@@ -25,12 +25,12 @@ pub fn generate_function(name: &String, args: Vec<Arg>, return_type: Vec<Type>, 
     return res;
 }
 
-pub fn generate_scope(mut body: Vec<u8>) -> Vec<u8> {
+pub fn generate_scope(body: &Vec<u8>) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 
     res.push(0xFE);
 
-    res.append(&mut body);
+    res.append(&mut body.clone());
 
     res.push(0xFD);
 
