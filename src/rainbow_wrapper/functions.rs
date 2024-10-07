@@ -1,5 +1,6 @@
 use super::{conversions::{to_bytecode_string, to_types}, types::Type};
 
+#[derive(Debug)]
 pub struct Arg {
     pub name: String,
     pub typ: Vec<Type>
