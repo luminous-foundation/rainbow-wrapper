@@ -3,7 +3,10 @@ use std::fmt::Formatter;
 
 /// Rainbow types.
 /// 
-/// Used with Value::TYPE
+/// Used with anything that requires you to use Rainbow types.
+/// (e.g. functions, externs, variables, etc.)
+/// 
+/// Often times wrapped in a [Vec] to represent a "full type" (allowing for pointers)
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum Type {
     VOID,

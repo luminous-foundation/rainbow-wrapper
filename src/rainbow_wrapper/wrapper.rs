@@ -10,26 +10,59 @@ pub struct Wrapper {
 }
 
 impl Wrapper {
+    /// Creates a new wrapper.
     pub fn new() -> Wrapper {
         Wrapper { bytes: Vec::new(), strings: HashSet::new(), imports: HashSet::new(), externs: HashSet::new() }
     }
 
+    /// Push an array of bytes to the wrapper.
+    /// 
+    /// These will be emitted as code when you run the `emit` function.
     pub fn push(&mut self, mut bytes: Vec<u8>) {
         self.bytes.append(&mut bytes);
     }
 
+    /// Push a string to the wrapper.
+    /// 
+    /// Strings are emitted as part of the Rainbow "data section" to be used.
+    /// Any UTF-8 string can be used.
     pub fn push_string(&mut self, string: &String) {
         self.strings.insert(string.to_string());
     }
 
+    /// Push an import to the wrapper.
+    /// 
+    /// Imports are emitted as imports to the top of the file.
+    /// 
+    /// Imports must also be `.rbb` files.
     pub fn push_import(&mut self, import: &String) {
         self.imports.insert(import.to_string());
     }
 
+    /// Push an extern to the wrapper.
+    /// 
+    /// Externs are emitted below imports.
+    /// 
+    /// Externs are used to communicate with compiled code from a dynamically linked library.
     pub fn push_extern(&mut self, r#extern: Extern) {
         self.externs.insert(r#extern);
     }
 
+    /// Merge this wrapper with another wrapper.
+    /// 
+    /// This is used if you have two wrappers you need to combine.
+    /// 
+    /// Does not modify the other wrapper.
+    pub fn merge(&mut self, other: &Wrapper) {
+        self.bytes.append(&mut other.bytes.clone());
+        self.strings.extend(other.strings.clone());
+        self.imports.extend(other.imports.clone());
+        self.externs.extend(other.externs.clone());
+    }
+
+    /// Emits the final bytes of the program, ready to be executed.
+    /// 
+    /// *Only* run when the program is done being added to the wrapper.
     pub fn emit(&mut self) -> Vec<u8> {
         let mut res: Vec<u8> = Vec::new();
 

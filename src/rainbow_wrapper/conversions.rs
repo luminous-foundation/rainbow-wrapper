@@ -62,7 +62,7 @@ pub fn to_type(typ: &Type) -> u8 {
     }
 }
 
-/// Converts a vector of types into bytes.
+/// Converts a full type into bytes.
 pub fn to_types(typ: &Vec<Type>) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 

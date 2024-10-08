@@ -1,5 +1,10 @@
 use super::{conversions::{to_bytecode_string, to_types}, types::Type};
 
+/// Argument struct.
+/// 
+/// `name`: name of the argument
+/// 
+/// `typ`: type of the argument
 #[derive(Debug)]
 pub struct Arg {
     pub name: String,
