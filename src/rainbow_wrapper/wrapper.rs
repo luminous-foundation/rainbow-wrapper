@@ -52,9 +52,23 @@ impl Wrapper {
     /// 
     /// This is used if you have two wrappers you need to combine.
     /// 
+    /// Merges everything.
+    /// 
     /// Does not modify the other wrapper.
     pub fn merge(&mut self, other: &Wrapper) {
         self.bytes.append(&mut other.bytes.clone());
+        self.strings.extend(other.strings.clone());
+        self.imports.extend(other.imports.clone());
+        self.externs.extend(other.externs.clone());
+    }
+    
+    /// Merge another wrapper's data into this wrapper.
+    /// (strings, imports, externs)
+    /// 
+    /// This is used if you have another wrapper that has data that you need in your main wrapper.
+    /// 
+    /// Does not modify the other wrapper.
+    pub fn merge_data(&mut self, other: &Wrapper) {
         self.strings.extend(other.strings.clone());
         self.imports.extend(other.imports.clone());
         self.externs.extend(other.externs.clone());
