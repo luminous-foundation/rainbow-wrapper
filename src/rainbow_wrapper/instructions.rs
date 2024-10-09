@@ -8,13 +8,13 @@
 /// Takes in `SIGNED(x)` | `UNSIGNED(x)` | `DECIMAL(x)`
 macro_rules! immediate {
     (SIGNED($x:expr)) => {
-        Value::SIGNED($x)
+        Value::SIGNED($x as i64)
     };
     (UNSIGNED($x:expr)) => {
-        Value::UNSIGNED($x)
+        Value::UNSIGNED($x as u64)
     };
     (DECIMAL($x:expr)) => {
-        Value::DECIMAL($x)
+        Value::DECIMAL($x as f64)
     };
 }
 
