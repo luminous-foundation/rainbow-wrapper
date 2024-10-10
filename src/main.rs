@@ -1,6 +1,6 @@
-use ::rainbow_wrapper::{rainbow_wrapper::{types::{Type, Value}, wrapper::Wrapper}};
+use rainbow_wrapper::wrapper::Wrapper;
 
-use ::rainbow_wrapper::*;
+use rainbow_wrapper::*;
 
 // testing!
 pub fn main() {

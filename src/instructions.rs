@@ -135,7 +135,7 @@ macro_rules! push {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x01);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
 
                 res
             }
@@ -143,7 +143,7 @@ macro_rules! push {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x02);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -163,7 +163,7 @@ macro_rules! pop {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x03);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -185,8 +185,8 @@ macro_rules! peek {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x04);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -194,8 +194,8 @@ macro_rules! peek {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x05);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -218,7 +218,7 @@ macro_rules! call {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x06);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&func));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&func));
 
                 res
             }
@@ -226,7 +226,7 @@ macro_rules! call {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x07);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&func));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&func));
 
                 res
             }
@@ -254,9 +254,9 @@ macro_rules! add {
                 // i do not know how to make the fully qualified names shorter
                 // pls make a PR if you do
                 res.push(0x08);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -264,9 +264,9 @@ macro_rules! add {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x09);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -274,9 +274,9 @@ macro_rules! add {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -284,9 +284,9 @@ macro_rules! add {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -310,9 +310,9 @@ macro_rules! sub {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -320,9 +320,9 @@ macro_rules! sub {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -330,9 +330,9 @@ macro_rules! sub {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -340,9 +340,9 @@ macro_rules! sub {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x0F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -366,9 +366,9 @@ macro_rules! mul {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x10);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -376,9 +376,9 @@ macro_rules! mul {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x11);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -386,9 +386,9 @@ macro_rules! mul {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x12);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -396,9 +396,9 @@ macro_rules! mul {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x13);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -422,9 +422,9 @@ macro_rules! div {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x14);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -432,9 +432,9 @@ macro_rules! div {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x15);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -442,9 +442,9 @@ macro_rules! div {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x16);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -452,9 +452,9 @@ macro_rules! div {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x17);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -476,7 +476,7 @@ macro_rules! jmp {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x18);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -484,7 +484,7 @@ macro_rules! jmp {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x19);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -508,9 +508,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -518,9 +518,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -528,9 +528,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -538,9 +538,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -548,9 +548,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -558,9 +558,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x1F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -568,9 +568,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x20);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -578,9 +578,9 @@ macro_rules! jne {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x21);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -604,9 +604,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x22);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -614,9 +614,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x23);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -624,9 +624,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x24);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -634,9 +634,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x25);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -644,9 +644,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x26);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -654,9 +654,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x27);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -664,9 +664,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x28);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -674,9 +674,9 @@ macro_rules! je {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x29);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -700,9 +700,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -710,9 +710,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -720,9 +720,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -730,9 +730,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -740,9 +740,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -750,9 +750,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x2F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -760,9 +760,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x30);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -770,9 +770,9 @@ macro_rules! jge {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x31);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -796,9 +796,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x32);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -806,9 +806,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x33);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -816,9 +816,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x34);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -826,9 +826,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x35);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -836,9 +836,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x36);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -846,9 +846,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x37);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -856,9 +856,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x38);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -866,9 +866,9 @@ macro_rules! jg {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x39);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -892,9 +892,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -902,9 +902,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -912,9 +912,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -922,9 +922,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -932,9 +932,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -942,9 +942,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x3F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -952,9 +952,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x40);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -962,9 +962,9 @@ macro_rules! jle {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x41);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -988,9 +988,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x42);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -998,9 +998,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x43);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -1008,9 +1008,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x44);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -1018,9 +1018,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x45);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$index));
 
                 res
             }
@@ -1028,9 +1028,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x46);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -1038,9 +1038,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x47);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -1048,9 +1048,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x48);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -1058,9 +1058,9 @@ macro_rules! jl {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x49);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&index));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&index));
 
                 res
             }
@@ -1084,8 +1084,8 @@ macro_rules! mov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1093,8 +1093,8 @@ macro_rules! mov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1102,8 +1102,8 @@ macro_rules! mov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1111,8 +1111,8 @@ macro_rules! mov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1120,8 +1120,8 @@ macro_rules! mov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1129,8 +1129,8 @@ macro_rules! mov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1156,9 +1156,9 @@ macro_rules! and {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x50);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1166,9 +1166,9 @@ macro_rules! and {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x51);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1176,9 +1176,9 @@ macro_rules! and {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x52);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1186,9 +1186,9 @@ macro_rules! and {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x53);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1212,9 +1212,9 @@ macro_rules! or {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x54);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1222,9 +1222,9 @@ macro_rules! or {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x55);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1232,9 +1232,9 @@ macro_rules! or {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x56);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1242,9 +1242,9 @@ macro_rules! or {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x57);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1268,9 +1268,9 @@ macro_rules! xor {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x58);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1278,9 +1278,9 @@ macro_rules! xor {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x59);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1288,9 +1288,9 @@ macro_rules! xor {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1298,9 +1298,9 @@ macro_rules! xor {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1324,8 +1324,8 @@ macro_rules! not {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1333,8 +1333,8 @@ macro_rules! not {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1358,9 +1358,9 @@ macro_rules! lsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1368,9 +1368,9 @@ macro_rules! lsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x5F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1378,9 +1378,9 @@ macro_rules! lsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x60);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1388,9 +1388,9 @@ macro_rules! lsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x61);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1414,9 +1414,9 @@ macro_rules! rsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x62);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1424,9 +1424,9 @@ macro_rules! rsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x63);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1434,9 +1434,9 @@ macro_rules! rsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x64);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1444,9 +1444,9 @@ macro_rules! rsh {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x65);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1474,8 +1474,8 @@ macro_rules! var {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x66);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1483,8 +1483,8 @@ macro_rules! var {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x67);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1492,8 +1492,8 @@ macro_rules! var {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x68);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1501,8 +1501,8 @@ macro_rules! var {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x69);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1529,7 +1529,7 @@ macro_rules! ret {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
 
                 res
             }
@@ -1537,7 +1537,7 @@ macro_rules! ret {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1561,8 +1561,8 @@ macro_rules! deref {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1570,8 +1570,8 @@ macro_rules! deref {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1593,8 +1593,8 @@ macro_rules! r#ref { // rust :why:
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x6F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1602,8 +1602,8 @@ macro_rules! r#ref { // rust :why:
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x70);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1627,8 +1627,8 @@ macro_rules! inst {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x71);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&r#struct));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&r#struct));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1636,8 +1636,8 @@ macro_rules! inst {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x72);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&r#struct));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&name));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&r#struct));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&name));
 
                 res
             }
@@ -1663,9 +1663,9 @@ macro_rules! r#mod {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x73);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1673,9 +1673,9 @@ macro_rules! r#mod {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x74);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1683,9 +1683,9 @@ macro_rules! r#mod {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x75);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1693,9 +1693,9 @@ macro_rules! r#mod {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x76);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&left));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&right));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&left));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&right));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1723,9 +1723,9 @@ macro_rules! pmov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x77);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$offset));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$offset));
 
                 res
             }
@@ -1733,9 +1733,9 @@ macro_rules! pmov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x78);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$offset));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$offset));
 
                 res
             }
@@ -1743,9 +1743,9 @@ macro_rules! pmov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x79);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&offset));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&offset));
 
                 res
             }
@@ -1753,9 +1753,9 @@ macro_rules! pmov {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&value));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&offset));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&value));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&offset));
 
                 res
             }
@@ -1781,9 +1781,9 @@ macro_rules! alloc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$size));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$size));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1791,9 +1791,9 @@ macro_rules! alloc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7C);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$size));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$size));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1801,9 +1801,9 @@ macro_rules! alloc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7D);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&size));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&size));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1811,9 +1811,9 @@ macro_rules! alloc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7E);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&typ));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&size));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&out));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&typ));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&size));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
                 res
             }
@@ -1839,7 +1839,7 @@ macro_rules! free {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x7F);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
 
                 res
             }
@@ -1852,8 +1852,8 @@ macro_rules! free {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x80);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$size));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$size));
 
                 res
             }
@@ -1861,8 +1861,8 @@ macro_rules! free {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x81);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$size));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$size));
 
                 res
             }
@@ -1870,8 +1870,8 @@ macro_rules! free {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x82);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&size));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&size));
 
                 res
             }
@@ -1879,8 +1879,8 @@ macro_rules! free {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x83);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&pointer));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&size));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&pointer));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&size));
 
                 res
             }
@@ -1908,9 +1908,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x84);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$args));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$addr));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$args));
 
                 res
             }
@@ -1918,9 +1918,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x85);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$args));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&addr));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$args));
 
                 res
             }
@@ -1928,9 +1928,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x86);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$args));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$addr));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$args));
 
                 res
             }
@@ -1938,9 +1938,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x87);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$args));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&addr));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$args));
 
                 res
             }
@@ -1948,9 +1948,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x88);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&args));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$addr));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&args));
 
                 res
             }
@@ -1958,9 +1958,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x89);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_types(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&args));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&addr));
+                res.append(&mut rainbow_wrapper::conversions::to_types(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&args));
 
                 res
             }
@@ -1968,9 +1968,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x8A);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_immediate(&$addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&args));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$addr));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&args));
 
                 res
             }
@@ -1978,9 +1978,9 @@ macro_rules! callc {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x8B);
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&addr));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&ret));
-                res.append(&mut ::rainbow_wrapper::rainbow_wrapper::conversions::to_bytecode_string(&args));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&addr));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&ret));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&args));
 
                 res
             }
