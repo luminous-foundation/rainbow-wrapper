@@ -1,14 +1,16 @@
 #[macro_export]
 macro_rules! block_cond {
     ($vec:expr, $type:expr, $left:expr, $condition:expr, $right:expr, $body:expr) => {
-        $vec.push(0xF7);
-        $vec.push($type); // rust analyzer is a bit confused but it works
-        $vec.append(&mut to_bytecode_string(&$left.to_string()));
-        $vec.push($condition);
-        $vec.append(&mut to_bytecode_string(&$left.to_string()));
-        $vec.push(0xFE);
-        $vec.append(&mut $body.clone());
-        $vec.push(0xFD);
+        {
+            $vec.push(0xF7);
+            $vec.push($type); // rust analyzer is a bit confused but it works
+            $vec.append(&mut to_bytecode_string(&$left.to_string()));
+            $vec.push($condition);
+            $vec.append(&mut to_bytecode_string(&$right.to_string()));
+            $vec.push(0xFE);
+            $vec.append(&mut $body.clone());
+            $vec.push(0xFD);
+        }
     };
 }
 
