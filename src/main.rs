@@ -54,10 +54,10 @@ pub fn main() {
     res.push(callc!(immediate!(UNSIGNED(0x867456AA)), rbtype!(VOID), immediate!(SIGNED(2))));
 
     res.push(
-        if_block!("PLATFORM", ==, "PLATFORM_WIN32", ret!(immediate!(SIGNED(34))))
+        if_block!("PLATFORM", "==", "PLATFORM_WIN32", ret!(immediate!(SIGNED(34))))
     );
     res.push(
-        elseif_block!("PLATFORM", ==, "PLATFORM_LINUX", ret!(immediate!(SIGNED(35))))
+        elseif_block!("PLATFORM", "==", "PLATFORM_LINUX", ret!(immediate!(SIGNED(35))))
     );
     res.push(
         else_block!(ret!(immediate!(SIGNED(255))))
