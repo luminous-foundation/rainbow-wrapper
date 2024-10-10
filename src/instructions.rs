@@ -251,8 +251,6 @@ macro_rules! add {
             (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
-                // i do not know how to make the fully qualified names shorter
-                // pls make a PR if you do
                 res.push(0x08);
                 res.append(&mut rainbow_wrapper::conversions::to_immediate(&$left));
                 res.append(&mut rainbow_wrapper::conversions::to_immediate(&$right));
