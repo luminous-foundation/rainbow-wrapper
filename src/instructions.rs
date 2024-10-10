@@ -24,7 +24,7 @@ macro_rules! immediate {
 /// Takes in a `String`
 macro_rules! ident {
     ($s:expr) => {
-        Value::IDENT($s)
+        Value::IDENT($s.to_string())
     };
 }
 
@@ -111,7 +111,7 @@ macro_rules! dynamic_ident {
 /// Takes in a `String`
 macro_rules! name {
     ($s:expr) => {
-        Value::NAME($s)
+        Value::NAME($s.to_string())
     };
 }
 
