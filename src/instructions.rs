@@ -147,7 +147,7 @@ macro_rules! push {
 
                 res
             }
-            _ => panic!("invalid arguments `{}` passed to `push` instruction", $value)
+            _ => panic!("invalid arguments [{}] passed to `push` instruction", $value)
         }
     }
 }
@@ -167,7 +167,7 @@ macro_rules! pop {
 
                 res
             }
-            _ => panic!("invalid arguments `{}` passed to the `pop` instruction", $out)
+            _ => panic!("invalid arguments [{}] passed to the `pop` instruction", $out)
         }
     }
 }
@@ -199,7 +199,7 @@ macro_rules! peek {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `peek` instruction", $value, $out)
+            _ => panic!("invalid arguments [{}, {}] passed to `peek` instruction", $value, $out)
         }
     }
 }
@@ -230,7 +230,7 @@ macro_rules! call {
 
                 res
             }
-            _ => panic!("invalid arguments `{}` passed to `call` instruction", $func),
+            _ => panic!("invalid arguments [{}] passed to `call` instruction", $func),
         }
     }
 }
@@ -288,7 +288,7 @@ macro_rules! add {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `add` instruction", $left, $right, $out),
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `add` instruction", $left, $right, $out),
         }
     }
 }
@@ -344,7 +344,7 @@ macro_rules! sub {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `sub` instruction", $left, $right, $out),
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `sub` instruction", $left, $right, $out),
         }
     }
 }
@@ -400,7 +400,7 @@ macro_rules! mul {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `mul` instruction", $left, $right, $out),
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `mul` instruction", $left, $right, $out),
         }
     }
 }
@@ -456,7 +456,7 @@ macro_rules! div {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `div` instruction", $left, $right, $out),
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `div` instruction", $left, $right, $out),
         }
     }
 }
@@ -486,7 +486,7 @@ macro_rules! jmp {
 
                 res
             }
-            _ => panic!("invalid arguments `{}` passed to `jmp` instruction", $index)
+            _ => panic!("invalid arguments [{}] passed to `jmp` instruction", $index)
         }
     }
 }
@@ -582,7 +582,7 @@ macro_rules! jne {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `jne` instruction", $left, $right, $index)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `jne` instruction", $left, $right, $index)
         }
     }
 }
@@ -678,7 +678,7 @@ macro_rules! je {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `je` instruction", $left, $right, $index)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `je` instruction", $left, $right, $index)
         }
     }
 }
@@ -774,7 +774,7 @@ macro_rules! jge {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `jge` instruction", $left, $right, $index)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `jge` instruction", $left, $right, $index)
         }
     }
 }
@@ -870,7 +870,7 @@ macro_rules! jg {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `jg instruction", $left, $right, $index)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `jg instruction", $left, $right, $index)
         }
     }
 }
@@ -966,7 +966,7 @@ macro_rules! jle {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `jle` instruction", $left, $right, $index)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `jle` instruction", $left, $right, $index)
         }
     }
 }
@@ -1062,7 +1062,7 @@ macro_rules! jl {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `jl` instruction", $left, $right, $index)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `jl` instruction", $left, $right, $index)
         }
     }
 }
@@ -1132,7 +1132,7 @@ macro_rules! mov {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `mov` instruction", $value, $out)
+            _ => panic!("invalid arguments [{}, {}] passed to `mov` instruction", $value, $out)
         }
     }
 }
@@ -1190,7 +1190,7 @@ macro_rules! and {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `and` instruction", $left, $right, $out)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `and` instruction", $left, $right, $out)
         }
     }
 }
@@ -1246,7 +1246,7 @@ macro_rules! or {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `or` instruction", $left, $right, $out)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `or` instruction", $left, $right, $out)
         }
     }
 }
@@ -1302,7 +1302,7 @@ macro_rules! xor {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `xor` instruction", $left, $right, $out)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `xor` instruction", $left, $right, $out)
         }
     }
 }
@@ -1336,7 +1336,7 @@ macro_rules! not {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `and` instruction", $value, $out)
+            _ => panic!("invalid arguments [{}, {}] passed to `and` instruction", $value, $out)
         }
     }
 }
@@ -1392,7 +1392,7 @@ macro_rules! lsh {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `lsh` instruction", $left, $right, $out)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `lsh` instruction", $left, $right, $out)
         }
     }
 }
@@ -1448,7 +1448,7 @@ macro_rules! rsh {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `rsh` instruction", $left, $right, $out)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `rsh` instruction", $left, $right, $out)
         }
     }
 }
@@ -1504,7 +1504,7 @@ macro_rules! var {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `var` instruction", $type, $name)
+            _ => panic!("invalid arguments [{}, {}] passed to `var` instruction", $type, $name)
         }
     }
 }
@@ -1539,7 +1539,7 @@ macro_rules! ret {
 
                 res
             }
-            _ => panic!("invalid arguments `{}` passed to `ret` instruction", $value)
+            _ => panic!("invalid arguments [{}] passed to `ret` instruction", $value)
         }
     }
 }
@@ -1573,7 +1573,7 @@ macro_rules! deref {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `deref` instruction", $pointer, $out)
+            _ => panic!("invalid arguments [{}, {}] passed to `deref` instruction", $pointer, $out)
         }
     };
 }
@@ -1605,7 +1605,7 @@ macro_rules! r#ref { // rust :why:
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `ref` instruction", $pointer, $out)
+            _ => panic!("invalid arguments [{}, {}] passed to `ref` instruction", $pointer, $out)
         }
     };
 }
@@ -1639,7 +1639,7 @@ macro_rules! inst {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `inst` instruction", $struct, $out)
+            _ => panic!("invalid arguments [{}, {}] passed to `inst` instruction", $struct, $out)
         }
     };
 }
@@ -1697,7 +1697,7 @@ macro_rules! r#mod {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `mod` instruction", $left, $right, $out)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `mod` instruction", $left, $right, $out)
         }
     }
 }
@@ -1757,7 +1757,7 @@ macro_rules! pmov {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `pmov` instruction", $value, $pointer, $offset)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `pmov` instruction", $value, $pointer, $offset)
         }
     }
 }
@@ -1815,7 +1815,7 @@ macro_rules! alloc {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `alloc` instruction", $typ, $size, $out)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `alloc` instruction", $typ, $size, $out)
         }
     };
 }
@@ -1841,7 +1841,7 @@ macro_rules! free {
 
                 res
             }
-            _ => panic!("invalid arguments `{}` passed to `free` instruction", $pointer)
+            _ => panic!("invalid arguments [{}] passed to `free` instruction", $pointer)
         }
     };
     ($pointer:expr, $size:expr) => {
@@ -1882,7 +1882,7 @@ macro_rules! free {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}` passed to `free` instruction", $pointer, $size)
+            _ => panic!("invalid arguments [{}, {}] passed to `free` instruction", $pointer, $size)
         }
     }
 }
@@ -1982,7 +1982,7 @@ macro_rules! callc {
 
                 res
             }
-            _ => panic!("invalid arguments `{}, {}, {}` passed to `callc` instruction", $addr, $ret, $args)
+            _ => panic!("invalid arguments [{}, {}, {}] passed to `callc` instruction", $addr, $ret, $args)
         }
     };
 }
