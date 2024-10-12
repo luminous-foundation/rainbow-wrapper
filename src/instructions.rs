@@ -2052,7 +2052,7 @@ macro_rules! cmp {
 
                 res.push(0x8E);
                 res.append(&mut rainbow_wrapper::conversions::to_immediate(&$cond));
-                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$a));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&a));
                 res.append(&mut rainbow_wrapper::conversions::to_immediate(&$b));
                 res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
 
