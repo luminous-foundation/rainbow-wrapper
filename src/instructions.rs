@@ -116,6 +116,31 @@ macro_rules! name {
 }
 
 #[macro_export]
+/// Used to get a condition.
+/// 
+/// Takes in `==` | `!=` | `>=` | `>` | `<=` | `<`
+macro_rules! cond {
+    (==) => {
+        Value::UNSIGNED(0)
+    };
+    (!=) => {
+        Value::UNSIGNED(1)
+    };
+    (>=) => {
+        Value::UNSIGNED(2)
+    };
+    (>) => {
+        Value::UNSIGNED(3)
+    };
+    (<=) => {
+        Value::UNSIGNED(4)
+    };
+    (<) => {
+        Value::UNSIGNED(5)
+    };
+}
+
+#[macro_export]
 /// Does nothing.
 macro_rules! nop {
     () => {
@@ -1983,6 +2008,112 @@ macro_rules! callc {
                 res
             }
             _ => panic!("invalid arguments [{}, {}, {}] passed to `callc` instruction", $addr, $ret, $args)
+        }
+    };
+}
+
+#[macro_export]
+/// Compares `b` and `c` with condition `a` and puts 0 or 1 in `d` depending on the result.
+/// 
+/// a: `immediate!` | `cond!` | `ident!`
+/// 
+/// b: `immediate!` | `ident!`
+/// 
+/// c: `immediate!` | `ident!`
+/// 
+/// d: `ident!`
+macro_rules! cmp {
+    ($cond:expr, $a:expr, $b:expr, $out:expr) => {
+        match ($cond, $a, $b, $out) {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x8C);
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$cond));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$a));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            (Value::IDENT(cond), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x8D);
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&cond));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$a));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(a), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x8E);
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$cond));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$a));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            (Value::IDENT(cond), Value::IDENT(a), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x8F);
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&cond));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&a));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(b), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x90);
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$cond));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$a));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            (Value::IDENT(cond), Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(b), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x91);
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&cond));
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$a));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(a), Value::IDENT(b), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x92);
+                res.append(&mut rainbow_wrapper::conversions::to_immediate(&$cond));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&a));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            (Value::IDENT(cond), Value::IDENT(a), Value::IDENT(b), Value::IDENT(out)) => {
+                let mut res: Vec<u8> = Vec::new();
+
+                res.push(0x93);
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&cond));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&a));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&b));
+                res.append(&mut rainbow_wrapper::conversions::to_bytecode_string(&out));
+
+                res
+            }
+            _ => panic!("invalid arguments [{}, {}, {}, {}] passed to `callc` instruction", $cond, $a, $b, $out)
         }
     };
 }

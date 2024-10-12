@@ -53,6 +53,8 @@ pub fn main() {
 
     res.push(callc!(immediate!(UNSIGNED(0x867456AA)), rbtype!(VOID), immediate!(SIGNED(2))));
 
+    res.push(cmp!(cond!(==), ident!("a"), ident!("b"), ident!("temp")));
+
     res.push(
         if_block!("PLATFORM", "==", "PLATFORM_WIN32", ret!(immediate!(SIGNED(34))))
     );
