@@ -1,3 +1,5 @@
+use crate::r#extern::Extern;
+
 use super::{conversions::{to_bytecode_string, to_types}, types::Type};
 
 /// Argument struct.
@@ -81,6 +83,24 @@ pub fn generate_module(name: &String, body: &Vec<u8>) -> Vec<u8> {
     res.push(0xFE);
     res.append(&mut body.clone());
     res.push(0xFD);
+
+    return res;
+}
+
+/// Returns the bytes for an extern.
+/// 
+/// `ext`: the extern
+pub fn generate_extern(ext: Extern) -> Vec<u8> {
+    let mut res: Vec<u8> = Vec::new();
+
+    res.push(0xF9);
+    res.append(&mut to_types(&ext.ret_type));
+    res.append(&mut to_bytecode_string(&ext.name));
+    for arg in &ext.arg_types {
+        res.append(&mut to_types(&arg));
+    }
+    res.push(0xF8);
+    res.append(&mut to_bytecode_string(&ext.file));
 
     return res;
 }

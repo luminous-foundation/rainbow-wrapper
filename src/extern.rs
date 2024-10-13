@@ -9,7 +9,7 @@ use super::types::Type;
 /// `arg_types`: the types of the arguments of the external function
 /// 
 /// `file`: the file that contains the external function
-#[derive(Hash, PartialEq, Eq, Clone)]
+#[derive(Hash, PartialEq, Eq, Clone, Debug)]
 pub struct Extern {
     pub ret_type: Vec<Type>, 
     pub name: String,
