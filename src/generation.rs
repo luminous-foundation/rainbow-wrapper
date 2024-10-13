@@ -54,12 +54,33 @@ pub fn generate_scope(body: &Vec<u8>) -> Vec<u8> {
     return res;
 }
 
+/// Returns the bytes for an import.
+/// 
+/// `import`: the import file, must end with '.rbb'
 pub fn generate_import(import: &String) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 
     res.push(0xFA);
 
     res.append(&mut to_bytecode_string(import));
+
+    return res;
+}
+
+/// Returns the bytes for a module.
+///
+/// `name`: the name of the module
+///
+/// `body`: the body of the module
+pub fn generate_module(name: &String, body: &Vec<u8>) -> Vec<u8> {
+    let mut res: Vec<u8> = Vec::new();
+
+    res.push(0xF6);
+    res.append(&mut to_bytecode_string(name));
+
+    res.push(0xFE);
+    res.append(&mut body.clone());
+    res.push(0xFD);
 
     return res;
 }
