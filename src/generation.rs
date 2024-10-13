@@ -90,7 +90,7 @@ pub fn generate_module(name: &String, body: &Vec<u8>) -> Vec<u8> {
 /// Returns the bytes for an extern.
 /// 
 /// `ext`: the extern
-pub fn generate_extern(ext: Extern) -> Vec<u8> {
+pub fn generate_extern(ext: &Extern) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 
     res.push(0xF9);
