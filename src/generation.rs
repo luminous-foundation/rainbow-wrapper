@@ -1,4 +1,4 @@
-use crate::r#extern::Extern;
+use crate::{r#extern::Extern, r#struct::Struct};
 
 use super::{conversions::{to_bytecode_string, to_types}, types::Type};
 
@@ -101,6 +101,29 @@ pub fn generate_extern(ext: &Extern) -> Vec<u8> {
     }
     res.push(0xF8);
     res.append(&mut to_bytecode_string(&ext.file));
+
+    return res;
+}
+
+/// Returns the bytes for a struct.
+/// 
+/// `struct`: the struct
+pub fn generate_struct(r#struct: Struct) -> Vec<u8> {
+    let mut res: Vec<u8> = Vec::new();
+
+    res.push(0xFB);
+    res.append(&mut to_bytecode_string(&r#struct.name));
+    res.push(0xFE);
+
+    let mut i = 0;
+    while i < r#struct.names.len() {
+        res.append(&mut to_types(&r#struct.types[i]));
+        res.append(&mut to_bytecode_string(&r#struct.names[i]));
+
+        i += 1;
+    }
+
+    res.push(0xFD);
 
     return res;
 }
