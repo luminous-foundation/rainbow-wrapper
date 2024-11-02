@@ -9,6 +9,8 @@ pub fn main() {
     res.push(nop!());
     
     res.push(push!(immediate!(SIGNED(32))));
+    res.push(push!(immediate!(NAME("callback"))));
+
     res.push(pop!(ident!("out")));
     res.push(peek!(immediate!(UNSIGNED(3)), ident!("out2")))    ;
     
@@ -40,7 +42,7 @@ pub fn main() {
 
     res.push(ret!());
                        // decimal as a pointer :)
-    res.push(deref!(immediate!(DECIMAL(3.3)), ident!("out6")));
+    res.push(crate::deref!(immediate!(DECIMAL(3.3)), ident!("out6")));
     res.push(r#ref!(ident!("out6"), ident!("out7")));
 
     res.push(inst!(name!("Foo"), ident!("out8")));

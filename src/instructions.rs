@@ -16,6 +16,9 @@ macro_rules! immediate {
     (DECIMAL($x:expr)) => {
         Value::DECIMAL($x as f64)
     };
+    (NAME($x:expr)) => {
+        Value::NAME($x.to_string())
+    }
 }
 
 #[macro_export]
@@ -156,7 +159,7 @@ macro_rules! nop {
 macro_rules! push {
     ($value:expr) => {
          match $value {
-            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_) | Value::NAME(_)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x01);
@@ -1103,7 +1106,7 @@ macro_rules! jl {
 macro_rules! mov {
     ($value:expr, $out:expr) => {
         match ($value, $out) {
-            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_) | Value::NAME(_), Value::IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4A);
@@ -1130,7 +1133,7 @@ macro_rules! mov {
 
                 res
             }
-            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_), Value::DYNAMIC_IDENT(out)) => {
+            (Value::SIGNED(_) | Value::UNSIGNED(_) | Value::DECIMAL(_) | Value::NAME(_), Value::DYNAMIC_IDENT(out)) => {
                 let mut res: Vec<u8> = Vec::new();
 
                 res.push(0x4D);
