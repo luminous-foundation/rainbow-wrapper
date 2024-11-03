@@ -101,6 +101,26 @@ pub fn generate_extern(ext: &Extern) -> Vec<u8> {
     }
     res.push(0xF8);
     res.append(&mut to_bytecode_string(&ext.file));
+    res.append(&mut to_bytecode_string(&ext.name));
+
+    return res;
+}
+
+/// Returns the bytes for an extern.
+/// 
+/// `ext`: the extern
+pub fn generate_named_extern(ext: &Extern, name: &String) -> Vec<u8> {
+    let mut res: Vec<u8> = Vec::new();
+
+    res.push(0xF9);
+    res.append(&mut to_types(&ext.ret_type));
+    res.append(&mut to_bytecode_string(&ext.name));
+    for arg in &ext.arg_types {
+        res.append(&mut to_types(&arg));
+    }
+    res.push(0xF8);
+    res.append(&mut to_bytecode_string(&ext.file));
+    res.append(&mut to_bytecode_string(name));
 
     return res;
 }
