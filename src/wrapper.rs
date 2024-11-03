@@ -1,3 +1,4 @@
+use sha2::{Sha256, Digest};
 use std::collections::HashSet;
 
 use super::{conversions::{to_bytecode_string, to_immediate, to_types}, r#extern::Extern, types::{Type, Value}};
@@ -101,13 +102,56 @@ impl Wrapper {
         if self.strings.len() > 0 {
             res.push(0xFC);
             for str in self.strings.iter() {
-                res.append(&mut to_bytecode_string(str));
+                if str.len() < 44 {
+                    res.append(&mut to_bytecode_string(&(" ".to_string() + str)));
+                } else {
+                    res.append(&mut to_bytecode_string(&hash_to_base64(&(" ".to_string() + str))));
+                }
                 res.append(&mut to_types(&vec![Type::POINTER, Type::U8]));
                 res.append(&mut to_immediate(&Value::UNSIGNED(str.len() as u64)));
-                res.append(&mut to_bytecode_string(str)[1..].to_vec());
+                res.append(&mut str.bytes().collect());
             }
         }
 
         return res;
     }
+}
+
+fn base64_encode(data: &[u8]) -> String {
+    const BASE64_CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut result = Vec::new();
+
+    for chunk in data.chunks(3) {
+        let mut buffer = [0u8; 3];
+        buffer[..chunk.len()].copy_from_slice(chunk);
+
+        let b1 = buffer[0] >> 2;
+        let b2 = ((buffer[0] & 0b00000011) << 4) | (buffer[1] >> 4);
+        let b3 = ((buffer[1] & 0b00001111) << 2) | (buffer[2] >> 6);
+        let b4 = buffer[2] & 0b00111111;
+
+        result.push(BASE64_CHARS[b1 as usize]);
+        result.push(BASE64_CHARS[b2 as usize]);
+
+        if chunk.len() > 1 {
+            result.push(BASE64_CHARS[b3 as usize]);
+        } else {
+            result.push(b'=');
+        }
+
+        if chunk.len() > 2 {
+            result.push(BASE64_CHARS[b4 as usize]);
+        } else {
+            result.push(b'=');
+        }
+    }
+
+    String::from_utf8(result).unwrap()
+}
+
+fn hash_to_base64(input: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(input.as_bytes());
+    let result = hasher.finalize();
+    base64_encode(&result)
 }

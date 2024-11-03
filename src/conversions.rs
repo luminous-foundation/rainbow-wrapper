@@ -3,7 +3,7 @@ use super::types::{Type, Value};
 /// Convert a string into a bytecode string.
 pub fn to_bytecode_string(text: &String) -> Vec<u8> {
     if text.len() >= 256 {
-        panic!("string {text} provided to to_bytecode_string is too long (length {} > 255)", text.len());
+        panic!("string \"{text}\" provided to to_bytecode_string is too long (length {} > 255)", text.len());
     }
 
     let mut res: Vec<u8> = Vec::new();

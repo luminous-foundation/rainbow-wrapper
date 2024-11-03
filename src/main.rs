@@ -70,5 +70,7 @@ pub fn main() {
         end_block!()
     );
 
+    res.push_string(&"this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars.".to_string());
+
     println!("{:?}", res.emit());
 }
