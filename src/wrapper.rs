@@ -116,6 +116,7 @@ impl Wrapper {
         return res;
     }
 
+    /// Gets the name of a given string, as used by the wrapper
     pub fn get_string_name(str: &String) -> String {
         if str.len() < 44 {
             return " ".to_string() + str;
