@@ -105,7 +105,7 @@ impl Wrapper {
                 if str.len() < 44 {
                     res.append(&mut to_bytecode_string(&(" ".to_string() + str)));
                 } else {
-                    res.append(&mut to_bytecode_string(&hash_to_base64(&(" ".to_string() + str))));
+                    res.append(&mut to_bytecode_string(&(" ".to_string() + &hash_to_base64(str))));
                 }
                 res.append(&mut to_types(&vec![Type::POINTER, Type::U8]));
                 res.append(&mut to_immediate(&Value::UNSIGNED(str.len() as u64)));
@@ -114,6 +114,14 @@ impl Wrapper {
         }
 
         return res;
+    }
+
+    pub fn get_string_name(str: &String) -> String {
+        if str.len() < 44 {
+            return " ".to_string() + str;
+        } else {
+            return " ".to_string() + &hash_to_base64(str);
+        }
     }
 }
 

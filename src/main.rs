@@ -72,5 +72,8 @@ pub fn main() {
 
     res.push_string(&"this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars. this string is longer than 256 chars.".to_string());
 
+    println!("{}", Wrapper::get_string_name(&"short string".to_string()));
+    println!("{}", Wrapper::get_string_name(&"loooooooooooooooooooooooooooooooooooooooong string".to_string()));
+
     println!("{:?}", res.emit());
 }
