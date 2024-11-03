@@ -13,6 +13,7 @@ use super::types::Type;
 pub struct Extern {
     pub ret_type: Vec<Type>, 
     pub name: String,
+    pub access_name: String,
     pub arg_types: Vec<Vec<Type>>, 
     pub file: String
 }
