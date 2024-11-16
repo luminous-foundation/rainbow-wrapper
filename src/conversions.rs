@@ -45,24 +45,28 @@ pub fn to_immediate(value: &Value) -> Vec<u8> {
 }
 
 /// Convert a wrapped type into bytes.
-pub fn to_type(typ: &Type) -> u8 {
+pub fn to_type(typ: &Type) -> Vec<u8> {
     match typ {
-        Type::VOID => 0x00,
-        Type::I8 => 0x01,
-        Type::I16 => 0x02,
-        Type::I32 => 0x03,
-        Type::I64 => 0x04,
-        Type::U8 => 0x05,
-        Type::U16 => 0x06,
-        Type::U32 => 0x07,
-        Type::U64 => 0x08,
-        Type::F16 => 0x09,
-        Type::F32 => 0x0A,
-        Type::F64 => 0x0B,
-        Type::POINTER => 0x0C,
-        Type::TYPE => 0x0D,
-        Type::STRUCT => 0x0E,
-        Type::NAME => 0x0F,
+        Type::VOID => vec![0x00],
+        Type::I8 => vec![0x01],
+        Type::I16 => vec![0x02],
+        Type::I32 => vec![0x03],
+        Type::I64 => vec![0x04],
+        Type::U8 => vec![0x05],
+        Type::U16 => vec![0x06],
+        Type::U32 => vec![0x07],
+        Type::U64 => vec![0x08],
+        Type::F16 => vec![0x09],
+        Type::F32 => vec![0x0A],
+        Type::F64 => vec![0x0B],
+        Type::POINTER => vec![0x0C],
+        Type::TYPE => vec![0x0D],
+        Type::STRUCT(typ) => {
+            let mut res = vec![0x0E];
+            res.append(&mut to_bytecode_string(typ));
+            res
+        }
+        Type::NAME   => vec![0x0F],
     }
 }
 
@@ -71,7 +75,7 @@ pub fn to_types(typ: &Vec<Type>) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
 
     for t in typ {
-        res.push(to_type(t));
+        res.append(&mut to_type(t));
     }
 
     return res;

@@ -7,7 +7,7 @@ use std::fmt::Formatter;
 /// (e.g. functions, externs, variables, etc.)
 /// 
 /// Often times wrapped in a [Vec] to represent a "full type" (allowing for pointers)
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum Type {
     VOID,
     I8,
@@ -23,7 +23,7 @@ pub enum Type {
     F64,
     POINTER,
     TYPE,
-    STRUCT,
+    STRUCT(String), // optional type def
     NAME,
 }
 
@@ -112,7 +112,7 @@ impl fmt::Display for Type {
             Type::F64 => f.write_str("f64"),
             Type::POINTER => f.write_str("pointer"),
             Type::TYPE => f.write_str("type"),
-            Type::STRUCT => f.write_str("struct"),
+            Type::STRUCT(typ) => f.write_fmt(format_args!("struct({})", typ)),
             Type::NAME => f.write_str("name"),
         }
     }
