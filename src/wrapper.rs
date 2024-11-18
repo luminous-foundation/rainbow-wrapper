@@ -102,7 +102,7 @@ impl Wrapper {
         if self.strings.len() > 0 {
             res.push(0xFC);
             for str in self.strings.iter() {
-                if str.len() < 44 || str.contains(".") {
+                if str.len() < 44 && !str.contains(".") {
                     res.append(&mut to_bytecode_string(&(" ".to_string() + str)));
                 } else {
                     res.append(&mut to_bytecode_string(&(" ".to_string() + &hash_to_base64(str))));
@@ -118,7 +118,7 @@ impl Wrapper {
 
     /// Gets the name of a given string, as used by the wrapper
     pub fn get_string_name(str: &String) -> String {
-        if str.len() < 44 || str.contains(".") {
+        if str.len() < 44 && !str.contains(".") {
             return " ".to_string() + str;
         } else {
             return " ".to_string() + &hash_to_base64(str);
