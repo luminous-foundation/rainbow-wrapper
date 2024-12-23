@@ -88,9 +88,6 @@ macro_rules! rbtype {
     (@single NAME) => {
         Type::NAME
     };
-    ($type:expr) => {
-        Value::TYPE($type)  
-    };
     ($($t:tt),*) => {
         Value::TYPE(vec![
             $(
