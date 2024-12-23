@@ -40,16 +40,6 @@ macro_rules! ident {
 /// 
 /// (note: the only combination that will work is any number of `POINTER` followed by any other type.)
 macro_rules! rbtype {
-    ($type:expr) => {
-        Value::TYPE($type)  
-    };
-    ($($t:tt),*) => {
-        Value::TYPE(vec![
-            $(
-                rbtype!(@single $t)
-            ),*
-        ])
-    };
     (@single POINTER) => {
         Type::POINTER
     };
@@ -97,6 +87,16 @@ macro_rules! rbtype {
     };
     (@single NAME) => {
         Type::NAME
+    };
+    ($type:expr) => {
+        Value::TYPE($type)  
+    };
+    ($($t:tt),*) => {
+        Value::TYPE(vec![
+            $(
+                rbtype!(@single $t)
+            ),*
+        ])
     };
 }
 
