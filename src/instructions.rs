@@ -47,6 +47,9 @@ macro_rules! rbtype {
             ),*
         ])
     };
+    ($type:expr) => {
+        Value::TYPE($type)  
+    };
     (@single POINTER) => {
         Type::POINTER
     };
