@@ -1,4 +1,4 @@
-use crate::{chunks::{Chunk, Data, FunctionRef, StructRef, Type}, code::CodeChunk, Wrapper};
+use crate::{chunks::{Chunk, Data, FuncRef, StructRef, Type}, code::CodeChunk, Wrapper};
 
 #[derive(Clone)]
 pub struct ModuleChunk {
@@ -108,7 +108,7 @@ impl Import {
 
 #[derive(Clone)]
 pub enum Item {
-    Function(FunctionRef),
+    Function(FuncRef),
     Struct(StructRef),
     Variable(String),
 }
@@ -116,7 +116,7 @@ pub enum Item {
 impl Item {
     pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
         match self {
-            Item::Function(func_ref) => wrapper.add_data(Data::FunctionRef(func_ref.clone())),
+            Item::Function(func_ref) => wrapper.add_data(Data::FuncRef(func_ref.clone())),
             Item::Struct(struct_ref) => wrapper.add_data(Data::StructRef(struct_ref.clone())),
             Item::Variable(name)     => wrapper.add_data(Data::Name(name.clone()))
         }

@@ -62,7 +62,7 @@ impl CodeBlock {
 
 #[derive(Clone)]
 pub struct Struct {
-    pub vars: Vec<(Type, String)>,
+    pub vars: Vec<(Type, String, Data)>,
 }
 
 impl Struct {
@@ -74,6 +74,7 @@ impl Struct {
         for var in &self.vars {
             bytes.append(&mut var.0.to_bytes(wrapper));
             bytes.append(&mut wrapper.add_data(Data::Name(var.1.clone())));
+            bytes.append(&mut wrapper.add_data(var.2.clone()));
         }
 
         bytes.push(0xFC);
