@@ -69,12 +69,14 @@ pub enum Type {
     F32,
     F64,
     FXX(TypeSize, TypeSize), // exponent bits, mantissa bits
-    Pointer(Box<Type>),
     Struct(StructRef),
     Name,
     Type,
     FuncRef,
     StructRef,
+
+    // modifiers
+    Pointer(Box<Type>),
 }
 
 // for custom-sized types
@@ -141,12 +143,14 @@ impl Type {
             Type::F64        => vec![0x0E],
             Type::FXX(e, m)  => vex![0x0F, 0x08 ; e.to_bytes(wrapper), vex![0x08 ; m.to_bytes(wrapper)]],
 
-            Type::Pointer(t) => vex![0x10 ; t.to_bytes_raw(wrapper)],
-            Type::Struct(r)  => vex![0x11 ; wrapper.add_data(Data::StructRef(r.clone()))],
-            Type::Name       => vec![0x12],
-            Type::Type       => vec![0x13],
-            Type::FuncRef    => vec![0x14],
-            Type::StructRef  => vec![0x15],
+            Type::Struct(r)  => vex![0x10 ; wrapper.add_data(Data::StructRef(r.clone()))],
+            Type::Name       => vec![0x11],
+            Type::Type       => vec![0x12],
+            Type::FuncRef    => vec![0x13],
+            Type::StructRef  => vec![0x14],
+
+            // modifiers
+            Type::Pointer(t) => vex![0x15 ; t.to_bytes_raw(wrapper)],
         };
     }
 }
