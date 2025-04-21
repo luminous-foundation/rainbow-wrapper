@@ -47,7 +47,7 @@ impl CodeBlock {
         match self {
             CodeBlock::Code(instructions) => {
                 for instruction in instructions {
-                    bytes.append(&mut instruction.to_bytes());
+                    bytes.append(&mut instruction.to_bytes(wrapper));
                 }
             }
             CodeBlock::Scope(chunk) => {
