@@ -1,7 +1,7 @@
 // this file lags neovim
 // :)
 
-use crate::{chunks::{Data, FuncRef, StructRef, Type, Number}, Wrapper};
+use crate::{chunks::{Data, FuncRef, StructRef, Type, Number}, WrapperCore};
 
 // VEc eXtended
 // Allows addition of Vecs to inline vecs
@@ -603,7 +603,7 @@ pub enum Instruction {
 
 // dont worry, this is all generated
 impl Instruction {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         match self {
             // just nop
             Instruction::NOP => vec![0x00],

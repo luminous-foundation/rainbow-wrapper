@@ -2,7 +2,7 @@ use std::hash::{Hash, Hasher};
 
 use half::f16;
 
-use crate::{checksum::ChecksumChunk, code::CodeChunk, conditional_parsing::ConditionalParsingChunk, data::DataChunk, metadata::MetadataChunk, modules::ModuleChunk, runtime_constants::RuntimeConstantChunk, type_cast::TypeCastChunk, Wrapper};
+use crate::{checksum::ChecksumChunk, code::CodeChunk, conditional_parsing::ConditionalParsingChunk, data::DataChunk, metadata::MetadataChunk, modules::ModuleChunk, runtime_constants::RuntimeConstantChunk, type_cast::TypeCastChunk, WrapperCore};
 
 /// The `Chunk` enum
 /// Defines every type of data chunk present in a Rainbow file
@@ -19,7 +19,7 @@ pub enum Chunk {
 }
 
 impl Chunk {
-    pub fn to_bytes(&mut self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&mut self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut chunk_bytes = match self {
             Chunk::Code(c)               => c.to_bytes(wrapper),
             Chunk::Module(c)             => c.to_bytes(wrapper),
@@ -43,7 +43,7 @@ impl Chunk {
             Chunk::RuntimeConstant(_)    => bytes.push(0x07),
         };
 
-        bytes.append(&mut Wrapper::index_to_bytes(chunk_bytes.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len()));
         bytes.append(&mut chunk_bytes);
 
         return bytes;
@@ -87,7 +87,7 @@ pub enum TypeSize {
 }
 
 impl TypeSize {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         match self {
             TypeSize::Constant(s) => wrapper.add_data(Data::Number(Number::U64(*s))),
             TypeSize::Variable(s) => wrapper.add_data(Data::Name(s.to_string())),
@@ -111,7 +111,7 @@ macro_rules! vex {
 }
 
 impl Type {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         return match self {
             Type::UXX(_) | Type::IXX(_) => wrapper.add_data(Data::ComplexType(self.clone())),
             Type::FXX(_, _) => wrapper.add_data(Data::ComplexType(self.clone())),
@@ -121,7 +121,7 @@ impl Type {
         }
     }
 
-    pub fn to_bytes_raw(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes_raw(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         return match self {
             Type::Void       => vec![0x00],
 
@@ -298,7 +298,7 @@ pub enum Data {
 }
 
 impl Data {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         match self {
@@ -308,12 +308,12 @@ impl Data {
             }
             Data::Name(name) => {
                 bytes.push(0x01);
-                bytes.append(&mut Wrapper::index_to_bytes(name.len()));
+                bytes.append(&mut WrapperCore::index_to_bytes(name.len()));
                 bytes.append(&mut name.as_bytes().to_vec());
             }
             Data::Array(values) => {
                 bytes.push(0x02);
-                bytes.append(&mut Wrapper::index_to_bytes(values.len()));
+                bytes.append(&mut WrapperCore::index_to_bytes(values.len()));
                 for val in values {
                     bytes.append(&mut val.to_bytes(wrapper));
                 }
@@ -355,15 +355,15 @@ pub struct FuncRef {
 }
 
 impl FuncRef {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut Wrapper::index_to_bytes(self.module.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(self.module.len()));
         for name in &self.module {
             bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
         }
         
-        bytes.append(&mut Wrapper::index_to_bytes(self.function.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(self.function.len()));
         for name in &self.function {
             bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
         }
@@ -382,15 +382,15 @@ pub struct StructRef {
 }
 
 impl StructRef {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut Wrapper::index_to_bytes(self.module.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(self.module.len()));
         for name in &self.module {
             bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
         }
         
-        bytes.append(&mut Wrapper::index_to_bytes(self.function.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(self.function.len()));
         for name in &self.function {
             bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
         }
