@@ -9,3 +9,4 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 half = "2.5.0"
 indexmap = "2.8.0"
+fox = { git="https://github.com/stormyhs/fox.git" }

@@ -6,6 +6,10 @@ pub struct ConditionalParsingChunk {
 }
 
 impl ConditionalParsingChunk {
+    pub fn new() -> ConditionalParsingChunk {
+        ConditionalParsingChunk { conditional_chunks: Vec::new() }
+    }
+
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 

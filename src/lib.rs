@@ -1,10 +1,16 @@
-use std::usize;
+use std::{rc::Rc, usize};
 
+use conditional_parsing::ConditionalParsingChunk;
 use chunk_node::ChunkNode;
 use chunks::{Chunk, Data};
+use code::CodeChunk;
 use data::DataChunk;
+use fox::*;
 use indexmap::IndexSet;
+use metadata::MetadataChunk;
+use modules::ModuleChunk;
 use runtime_constants::{RuntimeConstant, RuntimeConstantChunk};
+use type_cast::TypeCastChunk;
 
 // is having this many files the best idea?
 // i could combine them into less files and it would still work
@@ -29,7 +35,7 @@ const PATCH_VERSION: u16 = 0;
 pub struct Wrapper {
     pub wrapper_core: WrapperCore,
     
-    pub cur_chunk: Option<ChunkNode>,
+    pub cur_chunk: Option<Rc<ChunkNode>>,
 }
 
 impl Wrapper {
@@ -42,7 +48,73 @@ impl Wrapper {
     }
 
     pub fn code_begin(&mut self) {
-        
+        self.set_chunk(Chunk::Code(CodeChunk::new(self.cur_chunk.is_some())));
+    }
+
+    pub fn module_begin(&mut self, name: String) {
+        self.set_chunk(Chunk::Module(ModuleChunk::new(name, self.cur_chunk.is_some())));
+    }
+
+    // creating data section chunks manually is not supported here, as there is no way to use them
+    
+    pub fn metadata_begin(&mut self) {
+        self.set_chunk(Chunk::Metadata(MetadataChunk::new()));
+    }
+
+    pub fn checksum_begin(&mut self) {
+        todo!(); // :trol: i dont wanna implement it right now
+    }
+
+    pub fn type_cast_begin(&mut self) {
+        self.set_chunk(Chunk::TypeCast(TypeCastChunk::new()));
+    }
+
+    pub fn conditional_parsing_begin(&mut self) {
+        self.set_chunk(Chunk::ConditionalParsing(ConditionalParsingChunk::new()));
+    }
+
+    // creating runtime constant chunks manually is not supported here, as there is no way to use them
+    
+    // all of these `[chunk]_end` functions are just for consistency
+    // i feel like a C# dev right now
+    pub fn code_end(&mut self) {
+        self.chunk_end();
+    }
+
+    pub fn module_end(&mut self) {
+        self.chunk_end();
+    }
+
+    pub fn metadata_end(&mut self) {
+        self.chunk_end();
+    }
+
+    pub fn checksum_end(&mut self) {
+        self.chunk_end();
+    }
+
+    pub fn type_cast_end(&mut self) {
+        self.chunk_end();
+    }
+
+    pub fn conditional_parsing_end(&mut self) {
+        self.chunk_end();
+    }
+
+    fn chunk_end(&mut self) {
+        if let Some(chunk) = &self.cur_chunk {
+            if let Some(prev) = &chunk.prev {
+                self.cur_chunk = Some(prev.clone());
+            } else {
+                self.cur_chunk = None;
+            }
+        } else {
+            serror!("attempted to end chunk but was not in one");
+        }
+    }
+
+    fn set_chunk(&mut self, chunk: Chunk) {
+        self.cur_chunk = Some(Rc::new(ChunkNode::new(chunk, self.cur_chunk.clone())));
     }
 
     pub fn emit(&mut self) -> Vec<u8> {

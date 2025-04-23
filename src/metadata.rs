@@ -6,6 +6,10 @@ pub struct MetadataChunk {
 }
 
 impl MetadataChunk {
+    pub fn new() -> MetadataChunk {
+        MetadataChunk { metadata: Vec::new() }
+    }
+
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
