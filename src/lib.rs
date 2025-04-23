@@ -1,3 +1,5 @@
+use std::usize;
+
 use chunks::{Chunk, Data};
 use data::DataChunk;
 use indexmap::IndexSet;
@@ -24,6 +26,7 @@ const PATCH_VERSION: u16 = 0;
 pub struct Wrapper {
     pub compressed: bool,
     pub chunks: Vec<Chunk>,
+    pub endianness: bool,
 
     data: IndexSet<Data>,
     runtime_constants: IndexSet<RuntimeConstant>,
@@ -33,17 +36,35 @@ pub struct Wrapper {
 
 impl Wrapper {
     pub fn new() -> Wrapper {
-        Wrapper { chunks: Vec::new(), data: IndexSet::new(), runtime_constants: IndexSet::new(), compressed: false, signed: false }
+        Wrapper { 
+            chunks: Vec::new(), 
+            data: IndexSet::new(), 
+            runtime_constants: IndexSet::new(), 
+            compressed: false, 
+            signed: false, 
+            endianness: u16::from_ne_bytes([1, 0]) == 0, // stupid but im not making a function for this
+        }
     }
 
-    // TODO: optimize byte size to reduce file size
     /// Convert a number into a data section compatible number,
     /// consisting of {size} {bytes}
     pub fn index_to_bytes(index: usize) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.push((usize::BITS/8) as u8);
-        bytes.append(&mut index.to_be_bytes().to_vec());
+        // get smallest possible fit and use that
+        if index < u8::MAX as usize {
+            bytes.push((u8::BITS/8) as u8);
+            bytes.append(&mut (index as u8).to_be_bytes().to_vec());
+        } else if index < u16::MAX as usize {
+            bytes.push((u16::BITS/8) as u8);
+            bytes.append(&mut (index as u16).to_be_bytes().to_vec());
+        } else if index < u32::MAX as usize {
+            bytes.push((u32::BITS/8) as u8);
+            bytes.append(&mut (index as u32).to_be_bytes().to_vec());
+        } else {
+            bytes.push((u64::BITS/8) as u8);
+            bytes.append(&mut (index as u64).to_be_bytes().to_vec());
+        }
 
         return bytes;
     }
@@ -100,7 +121,7 @@ impl Wrapper {
 
         let mut i = 0;
         while i < self.chunks.len() {
-            let mut chunk = self.chunks[i].clone();
+            let mut chunk = self.chunks[i].clone(); // .clone() :why:
             body.append(&mut chunk.to_bytes(self));
             i += 1;
         }
@@ -112,6 +133,13 @@ impl Wrapper {
         out.append(&mut PATCH_VERSION.to_be_bytes().to_vec());
 
         out.append(&mut Self::checksum(&body).to_be_bytes().to_vec());
+
+        let endianness = if self.endianness {
+            1
+        } else {
+            0
+        };
+        out.push(endianness);
 
         let compressed = if self.compressed {
             1
