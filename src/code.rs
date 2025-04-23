@@ -1,4 +1,4 @@
-use crate::{chunks::{Data, Type}, instructions::Instruction, Wrapper};
+use crate::{chunks::{Data, Type}, instructions::Instruction, WrapperCore};
 
 #[derive(Clone)]
 pub struct CodeChunk {
@@ -10,7 +10,7 @@ pub struct CodeChunk {
 }
 
 impl CodeChunk {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         if self.has_parent {
@@ -42,7 +42,7 @@ pub enum CodeBlock {
 }
 
 impl CodeBlock {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         match self {
             CodeBlock::Code(instructions) => {
@@ -66,7 +66,7 @@ pub struct Struct {
 }
 
 impl Struct {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         bytes.push(0xFD);
@@ -91,7 +91,7 @@ pub struct Function {
 }
 
 impl Function {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![0xFB];
 
         bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));

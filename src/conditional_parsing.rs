@@ -1,4 +1,4 @@
-use crate::{chunks::Data, runtime_constants::RuntimeConstant, Wrapper};
+use crate::{chunks::Data, runtime_constants::RuntimeConstant, WrapperCore};
 
 #[derive(Clone)]
 pub struct ConditionalParsingChunk {
@@ -6,7 +6,7 @@ pub struct ConditionalParsingChunk {
 }
 
 impl ConditionalParsingChunk {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         for chunk in &self.conditional_chunks {
@@ -24,10 +24,10 @@ pub struct ConditionalChunk {
 }
 
 impl ConditionalChunk {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut Wrapper::index_to_bytes(self.chunk_id));
+        bytes.append(&mut WrapperCore::index_to_bytes(self.chunk_id));
         bytes.append(&mut self.conditional.to_bytes(wrapper));
 
         return bytes;
@@ -42,7 +42,7 @@ pub struct Conditional {
 }
 
 impl Conditional {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         bytes.append(&mut self.left.to_bytes(wrapper));
@@ -60,7 +60,7 @@ pub enum ConditionalValue {
 }
 
 impl ConditionalValue {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         match self {

@@ -1,6 +1,6 @@
 use indexmap::IndexSet;
 
-use crate::{chunks::{Data, Number, Type}, Wrapper};
+use crate::{chunks::{Data, Number, Type}, WrapperCore};
 
 #[derive(Clone)]
 pub struct RuntimeConstantChunk {
@@ -18,7 +18,7 @@ impl RuntimeConstantChunk {
         return chunk;
     }
 
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
     
         for constant in &self.constants {
@@ -37,10 +37,10 @@ pub struct RuntimeConstant {
 }
 
 impl RuntimeConstant {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut Wrapper::index_to_bytes(self.name.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(self.name.len()));
         bytes.append(&mut self.name.as_bytes().to_vec());
         bytes.append(&mut self.typ.to_bytes(wrapper));
         bytes.append(&mut self.default.to_bytes(wrapper));
@@ -55,7 +55,7 @@ pub enum Constant {
 }
 
 impl Constant {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         match self {

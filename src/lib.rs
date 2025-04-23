@@ -23,7 +23,7 @@ const MAJOR_VERSION: u16 = 1;
 const MINOR_VERSION: u16 = 0;
 const PATCH_VERSION: u16 = 0;
 
-pub struct Wrapper {
+pub struct WrapperCore {
     pub compressed: bool,
     pub chunks: Vec<Chunk>,
     pub endianness: bool,
@@ -34,9 +34,9 @@ pub struct Wrapper {
     signed: bool,
 }
 
-impl Wrapper {
-    pub fn new() -> Wrapper {
-        Wrapper { 
+impl WrapperCore {
+    pub fn new() -> WrapperCore {
+        WrapperCore { 
             chunks: Vec::new(), 
             data: IndexSet::new(), 
             runtime_constants: IndexSet::new(), 
@@ -71,7 +71,7 @@ impl Wrapper {
 
     pub fn add_data(&mut self, data: Data) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![0x01, 0x00]; // default data section index
-        bytes.append(&mut Wrapper::index_to_bytes(self.data.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(self.data.len()));
 
         self.data.insert(data);
         return bytes;
@@ -80,12 +80,12 @@ impl Wrapper {
     pub fn add_chunk(&mut self, chunk: Chunk) -> Vec<u8> {
         self.chunks.push(chunk);
 
-        return Wrapper::index_to_bytes(self.chunks.len() - 1);
+        return WrapperCore::index_to_bytes(self.chunks.len() - 1);
     }
 
     pub fn add_runtime_constant(&mut self, constant: RuntimeConstant) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
-        bytes.append(&mut Wrapper::index_to_bytes(constant.name.len()));
+        bytes.append(&mut WrapperCore::index_to_bytes(constant.name.len()));
         bytes.append(&mut constant.name.as_bytes().to_vec());
 
         self.runtime_constants.insert(constant);
@@ -154,7 +154,7 @@ impl Wrapper {
             out.push(0);
         }
 
-        out.append(&mut Wrapper::index_to_bytes(body.len()));
+        out.append(&mut WrapperCore::index_to_bytes(body.len()));
         
         out.append(&mut body);
 
