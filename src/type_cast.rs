@@ -1,6 +1,6 @@
 use indexmap::IndexMap;
 
-use crate::{chunks::{Data, FuncRef, Type}, Wrapper};
+use crate::{chunks::{Data, FuncRef, Type}, WrapperCore};
 
 #[derive(Clone)]
 pub struct TypeCastChunk {
@@ -8,7 +8,7 @@ pub struct TypeCastChunk {
 }
 
 impl TypeCastChunk {
-    pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
+    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         for type_cast in &self.type_casts {

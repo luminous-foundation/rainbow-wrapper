@@ -1,4 +1,4 @@
-use crate::Wrapper;
+use crate::WrapperCore;
 
 #[derive(Clone)]
 pub struct MetadataChunk {
@@ -29,15 +29,15 @@ impl Metadata {
 
         match self {
             Metadata::General(key, value) => {
-                bytes.append(&mut Wrapper::index_to_bytes(key.len()));
+                bytes.append(&mut WrapperCore::index_to_bytes(key.len()));
                 bytes.append(&mut key.as_bytes().to_vec());
-                bytes.append(&mut Wrapper::index_to_bytes(value.len()));
+                bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
                 bytes.append(&mut value.as_bytes().to_vec());
             }
             Metadata::Byte(chunk, offset, value) => {
-                bytes.append(&mut Wrapper::index_to_bytes(*chunk));
-                bytes.append(&mut Wrapper::index_to_bytes(*offset));
-                bytes.append(&mut Wrapper::index_to_bytes(value.len()));
+                bytes.append(&mut WrapperCore::index_to_bytes(*chunk));
+                bytes.append(&mut WrapperCore::index_to_bytes(*offset));
+                bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
                 bytes.append(&mut value.as_bytes().to_vec());
             }
         }

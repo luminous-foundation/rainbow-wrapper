@@ -1,7 +1,7 @@
-use rainbow_wrapper::Wrapper;
+use rainbow_wrapper::WrapperCore;
 
 pub fn main() {
-    let mut test = Wrapper::new();
+    let mut test = WrapperCore::new();
 
     println!("{:?}", test.emit())
 }
