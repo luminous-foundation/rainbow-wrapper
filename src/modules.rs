@@ -12,6 +12,18 @@ pub struct ModuleChunk {
 }
 
 impl ModuleChunk {
+    pub fn new(name: String, has_parent: bool) -> ModuleChunk {
+        ModuleChunk {
+            name,
+            has_parent,
+
+            blocks:  Vec::new(),
+            imports: Vec::new(),
+            exports: Vec::new(),
+            externs: Vec::new(),
+        }
+    }
+
     pub fn to_bytes(&mut self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         

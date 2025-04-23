@@ -8,6 +8,10 @@ pub struct TypeCastChunk {
 }
 
 impl TypeCastChunk {
+    pub fn new() -> TypeCastChunk {
+        TypeCastChunk { type_casts: IndexMap::new() }
+    }
+
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
