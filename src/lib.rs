@@ -1,5 +1,6 @@
 use std::usize;
 
+use chunk_node::ChunkNode;
 use chunks::{Chunk, Data};
 use data::DataChunk;
 use indexmap::IndexSet;
@@ -19,9 +20,35 @@ pub mod type_cast;
 pub mod conditional_parsing;
 pub mod runtime_constants;
 
+pub mod chunk_node;
+
 const MAJOR_VERSION: u16 = 1;
 const MINOR_VERSION: u16 = 0;
 const PATCH_VERSION: u16 = 0;
+
+pub struct Wrapper {
+    pub wrapper_core: WrapperCore,
+    
+    pub cur_chunk: Option<ChunkNode>,
+}
+
+impl Wrapper {
+    pub fn new() -> Wrapper {
+        Wrapper {
+            wrapper_core: WrapperCore::new(), 
+
+            cur_chunk: None,
+        }
+    }
+
+    pub fn code_begin(&mut self) {
+        
+    }
+
+    pub fn emit(&mut self) -> Vec<u8> {
+        self.wrapper_core.emit()
+    }
+}
 
 pub struct WrapperCore {
     pub compressed: bool,
