@@ -1,3 +1,6 @@
+// this file lags neovim
+// :)
+
 use crate::{chunks::{Data, FuncRef, StructRef, Type, Number}, Wrapper};
 
 // VEc eXtended
@@ -598,6 +601,7 @@ pub enum Instruction {
     GENTYPE_MODIFY_S_S_S /*pop*/ /*pop*/ /*push*/ ,
 }
 
+// dont worry, this is all generated
 impl Instruction {
     pub fn to_bytes(&self, wrapper: &mut Wrapper) -> Vec<u8> {
         match self {
