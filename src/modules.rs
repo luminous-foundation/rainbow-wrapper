@@ -24,6 +24,10 @@ impl ModuleChunk {
         }
     }
 
+    pub fn add_code(&mut self, chunk: CodeChunk) {
+        self.blocks.push(ModuleBlock::Code(chunk));
+    }
+
     pub fn to_bytes(&mut self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         

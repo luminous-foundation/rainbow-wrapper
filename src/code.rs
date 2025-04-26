@@ -1,4 +1,4 @@
-use crate::{chunks::{Data, Type}, instructions::Instruction, WrapperCore};
+use crate::{chunks::{Chunk, Data, Type}, instructions::Instruction, WrapperCore};
 
 #[derive(Clone)]
 pub struct CodeChunk {
@@ -15,8 +15,12 @@ impl CodeChunk {
             has_parent, 
             structs: Vec::new(), 
             functions: Vec::new(), 
-            blocks: Vec::new()
+            blocks: vec![CodeBlock::Code(Vec::new())]
         }
+    }
+
+    pub fn add_scope(&mut self, chunk: CodeChunk) {
+        self.blocks.push(CodeBlock::Scope(chunk));
     }
 
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
@@ -61,8 +65,7 @@ impl CodeBlock {
             }
             CodeBlock::Scope(chunk) => {
                 bytes.push(0xFF);
-                bytes.append(&mut chunk.to_bytes(wrapper));
-                bytes.push(0xFE);
+                bytes.append(&mut wrapper.add_chunk(Chunk::Code(chunk.clone())));
             }
         }
         return bytes;
