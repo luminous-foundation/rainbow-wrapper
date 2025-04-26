@@ -3,7 +3,7 @@
 
 use crate::{chunks::{Data, FuncRef, StructRef, Type, Number}, WrapperCore, vex};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 #[allow(non_camel_case_types)]
 // it's just gotta be nicely formatted, yknow?
 // i WILL spend hours on this for no reason

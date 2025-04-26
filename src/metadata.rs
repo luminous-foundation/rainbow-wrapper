@@ -1,6 +1,6 @@
 use crate::WrapperCore;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct MetadataChunk {
     pub metadata: Vec<Metadata>
 }
@@ -21,7 +21,7 @@ impl MetadataChunk {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Metadata {
     General(String, String),
     Byte(usize, usize, String),
