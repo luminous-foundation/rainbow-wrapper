@@ -1,6 +1,6 @@
 use crate::{chunks::Data, runtime_constants::RuntimeConstant, WrapperCore};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct ConditionalParsingChunk {
     pub conditional_chunks: Vec<ConditionalChunk>,
 }
@@ -21,7 +21,7 @@ impl ConditionalParsingChunk {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct ConditionalChunk {
     pub chunk_id: usize,
     pub conditional: Conditional,
@@ -38,7 +38,7 @@ impl ConditionalChunk {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Conditional {
     pub left: ConditionalValue,
     pub condition: Condition,
@@ -57,7 +57,7 @@ impl Conditional {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum ConditionalValue {
     Value(Data),
     RuntimeConstant(RuntimeConstant),
@@ -78,7 +78,7 @@ impl ConditionalValue {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Condition {
     Equal,
     NotEqual,

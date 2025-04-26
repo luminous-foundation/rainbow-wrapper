@@ -2,12 +2,18 @@ use indexmap::IndexSet;
 
 use crate::{chunks::Data, WrapperCore};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct DataChunk {
     pub data: Vec<Data>
 }
 
 impl DataChunk {
+    pub fn new() -> DataChunk {
+        DataChunk { 
+            data: Vec::new()
+        }
+    }
+
     pub fn from_set(data: &IndexSet<Data>) -> DataChunk {
         let mut chunk: DataChunk = DataChunk { data: Vec::new() };
 

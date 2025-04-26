@@ -1,6 +1,6 @@
 use crate::{chunks::{Chunk, Data, Type}, instructions::Instruction, WrapperCore};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct CodeChunk {
     pub has_parent: bool,
 
@@ -15,7 +15,7 @@ impl CodeChunk {
             has_parent, 
             structs: Vec::new(), 
             functions: Vec::new(), 
-            blocks: vec![CodeBlock::Code(Vec::new())]
+            blocks: vec![CodeBlock::Code(Vec::new())],
         }
     }
 
@@ -48,7 +48,7 @@ impl CodeChunk {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum CodeBlock {
     Code(Vec<Instruction>),
     Scope(CodeChunk),
@@ -72,7 +72,7 @@ impl CodeBlock {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Struct {
     pub vars: Vec<(Type, String, Data)>,
 }
@@ -95,7 +95,7 @@ impl Struct {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
     pub args: Vec<(Type, String)>,

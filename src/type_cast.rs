@@ -2,7 +2,7 @@ use indexmap::IndexMap;
 
 use crate::{chunks::{Data, FuncRef, Type}, WrapperCore};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct TypeCastChunk {
     pub type_casts: IndexMap<(Type, Type), FuncRef>
 }

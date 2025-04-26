@@ -1,6 +1,6 @@
 use crate::{chunks::{Chunk, Data, FuncRef, StructRef, Type}, code::CodeChunk, WrapperCore};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct ModuleChunk {
     pub name: String,
     pub has_parent: bool,
@@ -79,7 +79,7 @@ impl ModuleChunk {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum ModuleBlock {
     Code(CodeChunk),
     Module(ModuleChunk),
@@ -94,7 +94,7 @@ impl ModuleBlock {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Import {
     ModuleImport(String, String, String), // path, name, as name
     ItemImport(String, String, Item, String), // path, name, item, as name
@@ -122,7 +122,7 @@ impl Import {
     } 
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Item {
     Function(FuncRef),
     Struct(StructRef),
@@ -139,7 +139,7 @@ impl Item {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Extern {
     pub path: String,
     pub name: String,
