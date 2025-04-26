@@ -1,12 +1,12 @@
-use std::{rc::Rc, usize};
+use std::{hint::unreachable_unchecked, process::exit};
 
 use conditional_parsing::ConditionalParsingChunk;
-use chunk_node::ChunkNode;
+use fox::critical;
 use chunks::{Chunk, Data};
-use code::CodeChunk;
+use code::{CodeBlock, CodeChunk};
 use data::DataChunk;
-use fox::*;
 use indexmap::IndexSet;
+use instructions::Instruction;
 use metadata::MetadataChunk;
 use modules::ModuleChunk;
 use runtime_constants::{RuntimeConstant, RuntimeConstantChunk};
@@ -26,8 +26,6 @@ pub mod type_cast;
 pub mod conditional_parsing;
 pub mod runtime_constants;
 
-pub mod chunk_node;
-
 const MAJOR_VERSION: u16 = 1;
 const MINOR_VERSION: u16 = 0;
 const PATCH_VERSION: u16 = 0;
@@ -35,7 +33,7 @@ const PATCH_VERSION: u16 = 0;
 pub struct Wrapper {
     pub wrapper_core: WrapperCore,
     
-    pub cur_chunk: Option<Rc<ChunkNode>>,
+    chunk_list: Vec<Chunk>,
 }
 
 impl Wrapper {
@@ -43,46 +41,144 @@ impl Wrapper {
         Wrapper {
             wrapper_core: WrapperCore::new(), 
 
-            cur_chunk: None,
+            chunk_list: Vec::new(),
         }
     }
 
+    // code chunk
     pub fn code_begin(&mut self) {
-        self.set_chunk(Chunk::Code(CodeChunk::new(self.cur_chunk.is_some())));
+        if let Some(chunk) = self.prev_chunk() {
+            match chunk {
+                Chunk::Code(_) | Chunk::Module(_) => {},
+                _ => { critical!("cannot nest code chunks with non-code/non-module chunks"); exit(1); }
+            }
+        }
+
+        self.add_chunk(Chunk::Code(CodeChunk::new(self.chunk_list.len() > 0)));
     }
 
+    pub fn add_instruction(&mut self, inst: Instruction) {
+        let chunk = self.chunk_list.last_mut();
+        if let Some(chunk) = chunk {
+            match chunk {
+                Chunk::Code(c) => {
+                    let block = c.blocks.last_mut();
+                    if let Some(block) = block {
+                        let block = match block {
+                            CodeBlock::Code(inst) => inst,
+                            CodeBlock::Scope(_) => { // TODO: this is dumb
+                                c.blocks.push(CodeBlock::Code(Vec::new()));
+                                if let Some(b) = c.blocks.last_mut() {
+                                    if let CodeBlock::Code(c) = b {
+                                        c
+                                    } else {
+                                        unsafe { unreachable_unchecked() }
+                                    }
+                                } else {
+                                    unsafe { unreachable_unchecked() }
+                                }
+                            },
+                        };
+                        block.push(inst);
+                    } else {
+                        unreachable!("found a code chunk with no blocks. this is probably a bug");
+                    }
+                }
+                _ => {
+                    fox::scritical!("attempted to add an instruction while not in a code chunk");
+                    exit(1);
+                }
+            }
+        } else {
+            fox::scritical!("attempted to add an instruction while not in a chunk");
+            exit(1);
+        }
+    }
+
+    pub fn code_end(&mut self) {
+        let chunk = self.chunk_list.pop();
+        if let Some(chunk) = chunk {
+            let chunk = match chunk {
+                Chunk::Code(c) => c,
+                _ => {
+                    fox::scritical!("ran `code_end` when not in code chunk");
+                    exit(1);
+                }
+            };
+            let prev = self.chunk_list.last_mut();
+            if let Some(prev) = prev {
+                match prev {
+                    Chunk::Code(c)   => c.add_scope(chunk), 
+                    Chunk::Module(c) => c.add_code(chunk),
+                    _ => unreachable!("somehow nested a code block in a non-code block. this is probably a bug")
+                }
+            } else {
+                self.chunk_list.push(Chunk::Code(chunk));
+            }
+        } else {
+            fox::serror!("attempted to end chunk but was not in one");
+        }
+    }
+
+    // module chunk
     pub fn module_begin(&mut self, name: String) {
-        self.set_chunk(Chunk::Module(ModuleChunk::new(name, self.cur_chunk.is_some())));
+        if let Some(chunk) = self.prev_chunk() {
+            match chunk {
+                Chunk::Module(_) => {},
+                _ => { critical!("cannot nest module chunks with non-module chunks"); exit(1); }
+            }
+        }
+        self.add_chunk(Chunk::Module(ModuleChunk::new(name, self.chunk_list.len() > 0)));
     }
 
     // creating data section chunks manually is not supported here, as there is no way to use them
     
+    // metadata chunk
     pub fn metadata_begin(&mut self) {
-        self.set_chunk(Chunk::Metadata(MetadataChunk::new()));
+        if self.chunk_list.len() > 0 {
+            critical!("cannot nest non code/module chunks"); 
+            exit(1); 
+        }
+
+        self.add_chunk(Chunk::Metadata(MetadataChunk::new()));
     }
 
+    // checksum chunk
     pub fn checksum_begin(&mut self) {
+        if self.chunk_list.len() > 0 {
+            critical!("cannot nest non code/module chunks"); 
+            exit(1); 
+        }
+
         todo!(); // :trol: i dont wanna implement it right now
     }
 
+    // type cast chunk
     pub fn type_cast_begin(&mut self) {
-        self.set_chunk(Chunk::TypeCast(TypeCastChunk::new()));
-    }
+        if self.chunk_list.len() > 0 {
+            critical!("cannot nest non code/module chunks"); 
+            exit(1); 
+        }
 
+        self.add_chunk(Chunk::TypeCast(TypeCastChunk::new()));
+    }
+    
+    // conditional parsing chunk
     pub fn conditional_parsing_begin(&mut self) {
-        self.set_chunk(Chunk::ConditionalParsing(ConditionalParsingChunk::new()));
+        if self.chunk_list.len() > 0 {
+            critical!("cannot nest non code/module chunks"); 
+            exit(1); 
+        }
+
+        self.add_chunk(Chunk::ConditionalParsing(ConditionalParsingChunk::new()));
     }
 
     // creating runtime constant chunks manually is not supported here, as there is no way to use them
     
-    // all of these `[chunk]_end` functions are just for consistency
+    // all of these `[chunk]_end` functions are just for consistency unless they have more functionality
     // i feel like a C# dev right now
-    pub fn code_end(&mut self) {
-        self.chunk_end();
-    }
-
     pub fn module_end(&mut self) {
-        self.chunk_end();
+        todo!();
     }
 
     pub fn metadata_end(&mut self) {
@@ -102,22 +198,23 @@ impl Wrapper {
     }
 
     fn chunk_end(&mut self) {
-        if let Some(chunk) = &self.cur_chunk {
-            if let Some(prev) = &chunk.prev {
-                self.cur_chunk = Some(prev.clone());
-            } else {
-                self.cur_chunk = None;
-            }
+        if let Some(chunk) = self.chunk_list.pop() {
+            self.wrapper_core.add_chunk(chunk);
         } else {
-            serror!("attempted to end chunk but was not in one");
+            fox::serror!("attempted to end chunk but was not in one");
         }
     }
 
-    fn set_chunk(&mut self, chunk: Chunk) {
-        self.cur_chunk = Some(Rc::new(ChunkNode::new(chunk, self.cur_chunk.clone())));
+    fn add_chunk(&mut self, chunk: Chunk) {
+        self.chunk_list.push(chunk);
+    }
+
+    fn prev_chunk(&self) -> Option<Chunk> {
+        return self.chunk_list.last().cloned();
     }
 
     pub fn emit(&mut self) -> Vec<u8> {
+        self.wrapper_core.chunks.append(&mut self.chunk_list);
         self.wrapper_core.emit()
     }
 }
@@ -153,16 +250,16 @@ impl WrapperCore {
         // get smallest possible fit and use that
         if index < u8::MAX as usize {
             bytes.push((u8::BITS/8) as u8);
-            bytes.append(&mut (index as u8).to_be_bytes().to_vec());
+            bytes.append(&mut (index as u8).to_ne_bytes().to_vec());
         } else if index < u16::MAX as usize {
             bytes.push((u16::BITS/8) as u8);
-            bytes.append(&mut (index as u16).to_be_bytes().to_vec());
+            bytes.append(&mut (index as u16).to_ne_bytes().to_vec());
         } else if index < u32::MAX as usize {
             bytes.push((u32::BITS/8) as u8);
-            bytes.append(&mut (index as u32).to_be_bytes().to_vec());
+            bytes.append(&mut (index as u32).to_ne_bytes().to_vec());
         } else {
             bytes.push((u64::BITS/8) as u8);
-            bytes.append(&mut (index as u64).to_be_bytes().to_vec());
+            bytes.append(&mut (index as u64).to_ne_bytes().to_vec());
         }
 
         return bytes;
@@ -215,6 +312,14 @@ impl WrapperCore {
     pub fn emit(&mut self) -> Vec<u8> {
         let mut body: Vec<u8> = Vec::new();
 
+        // TODO: figure out a way to populate the data section *without* needing to do this whole thing twice
+        let mut i = 0;
+        while i < self.chunks.len() {
+            let mut chunk = self.chunks[i].clone(); // .clone() :why:
+            chunk.to_bytes(self);
+            i += 1;
+        }
+
         self.chunks.insert(0, Chunk::Data(DataChunk::from_set(&self.data)));
         self.chunks.insert(1, Chunk::RuntimeConstant(RuntimeConstantChunk::from_set(&self.runtime_constants)));
 
@@ -227,11 +332,11 @@ impl WrapperCore {
 
         // RBB file header
         let mut out: Vec<u8> = b"RBB".to_vec();
-        out.append(&mut MAJOR_VERSION.to_be_bytes().to_vec());
-        out.append(&mut MINOR_VERSION.to_be_bytes().to_vec());
-        out.append(&mut PATCH_VERSION.to_be_bytes().to_vec());
+        out.append(&mut MAJOR_VERSION.to_ne_bytes().to_vec());
+        out.append(&mut MINOR_VERSION.to_ne_bytes().to_vec());
+        out.append(&mut PATCH_VERSION.to_ne_bytes().to_vec());
 
-        out.append(&mut Self::checksum(&body).to_be_bytes().to_vec());
+        out.append(&mut Self::checksum(&body).to_ne_bytes().to_vec());
 
         let endianness = if self.endianness {
             1
