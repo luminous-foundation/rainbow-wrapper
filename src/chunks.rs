@@ -6,7 +6,7 @@ use crate::{checksum::ChecksumChunk, code::CodeChunk, conditional_parsing::Condi
 
 /// The `Chunk` enum
 /// Defines every type of data chunk present in a Rainbow file
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Chunk {
     Code(CodeChunk),
     Module(ModuleChunk),
@@ -109,7 +109,7 @@ impl Type {
         }
     }
 
-    // TODO (low priority): optimize sizes
+    // TODO (low priority): optimize sizes of numbers to be smallest fit
     pub fn to_bytes_raw(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         return match self {
             Type::Void       => vec![0x00],

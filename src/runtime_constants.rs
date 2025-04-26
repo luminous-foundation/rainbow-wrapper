@@ -2,12 +2,18 @@ use indexmap::IndexSet;
 
 use crate::{chunks::{Data, Number, Type}, WrapperCore};
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct RuntimeConstantChunk {
     pub constants: Vec<RuntimeConstant>,
 }
 
 impl RuntimeConstantChunk {
+    pub fn new() -> RuntimeConstantChunk {
+        RuntimeConstantChunk {
+            constants: Vec::new(),
+        }
+    }
+
     pub fn from_set(constants: &IndexSet<RuntimeConstant>) -> RuntimeConstantChunk {
         let mut chunk: RuntimeConstantChunk = RuntimeConstantChunk { constants: Vec::new() };
 
@@ -29,7 +35,7 @@ impl RuntimeConstantChunk {
     }
 }
 
-#[derive(Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct RuntimeConstant {
     pub name: String,
     pub typ: Type,
@@ -49,7 +55,7 @@ impl RuntimeConstant {
     }
 }
 
-#[derive(Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum Constant {
     Number(Number),
 }
