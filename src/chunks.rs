@@ -42,8 +42,11 @@ impl Chunk {
             Chunk::ConditionalParsing(_) => bytes.push(0x06),
             Chunk::RuntimeConstant(_)    => bytes.push(0x07),
         };
-
-        bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len()));
+        
+        match self {
+            Chunk::Code(_) | Chunk::Module(_) => bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len() - 1)),
+            _ => bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len())),
+        }
         bytes.append(&mut chunk_bytes);
 
         return bytes;
@@ -51,24 +54,24 @@ impl Chunk {
 }
 
 // stuff shared between chunks
-#[derive(Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum Type {
     Void,
     U8,
     U16,
     U32,
     U64,
-    UXX(TypeSize), // NOTE: in future versions this will be truly unlimited, but we're not there yet
+    UXX(u64), // NOTE: in future versions this will be truly unlimited, but we're not there yet
     I8,
     I16,
     I32,
     I64,
-    IXX(TypeSize),
+    IXX(u64),
     F8,
     F16,
     F32,
     F64,
-    FXX(TypeSize, TypeSize), // exponent bits, mantissa bits
+    FXX(u64, u64), // exponent bits, mantissa bits
     Struct(StructRef),
     Name,
     Type,
@@ -79,24 +82,9 @@ pub enum Type {
     Pointer(Box<Type>),
 }
 
-// for custom-sized types
-#[derive(Clone, Hash, PartialEq, Eq)]
-pub enum TypeSize {
-    Constant(u64),
-    Variable(String),
-}
-
-impl TypeSize {
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
-        match self {
-            TypeSize::Constant(s) => wrapper.add_data(Data::Number(Number::U64(*s))),
-            TypeSize::Variable(s) => wrapper.add_data(Data::Name(s.to_string())),
-        }
-    }
-}
-
 // VEc eXtended
 // Allows addition of Vecs to inline vecs
+#[macro_export]
 macro_rules! vex {
     ($($element:expr),* $(,)? ; $($vec:expr),*) => {{
         let mut result = Vec::<u8>::new();
@@ -121,6 +109,7 @@ impl Type {
         }
     }
 
+    // TODO (low priority): optimize sizes
     pub fn to_bytes_raw(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         return match self {
             Type::Void       => vec![0x00],
@@ -129,19 +118,19 @@ impl Type {
             Type::U16        => vec![0x02],
             Type::U32        => vec![0x03],
             Type::U64        => vec![0x04],
-            Type::UXX(s)     => vex![0x05, 0x08 ; s.to_bytes(wrapper)],
+            Type::UXX(s)     => vex![0x05, 0x08 ; s.to_ne_bytes().to_vec()],
 
             Type::I8         => vec![0x06],
             Type::I16        => vec![0x07],
             Type::I32        => vec![0x08],
             Type::I64        => vec![0x09],
-            Type::IXX(s)     => vex![0x0A, 0x08 ; s.to_bytes(wrapper)],
+            Type::IXX(s)     => vex![0x0A, 0x08 ; s.to_ne_bytes().to_vec()],
 
             Type::F8         => vec![0x0B],
             Type::F16        => vec![0x0C],
             Type::F32        => vec![0x0D],
             Type::F64        => vec![0x0E],
-            Type::FXX(e, m)  => vex![0x0F, 0x08 ; e.to_bytes(wrapper), vex![0x08 ; m.to_bytes(wrapper)]],
+            Type::FXX(e, m)  => vex![0x0F, 0x08 ; e.to_ne_bytes().to_vec(), vex![0x08 ; m.to_ne_bytes().to_vec()]],
 
             Type::Struct(r)  => vex![0x10 ; wrapper.add_data(Data::StructRef(r.clone()))],
             Type::Name       => vec![0x11],
@@ -155,7 +144,7 @@ impl Type {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Number {
     U8(u8),
     U16(u16),
@@ -180,21 +169,21 @@ impl Number {
     pub fn to_bytes(&self) -> Vec<u8> {
         match self {
             Number::U8(n)  => vec![*n],
-            Number::U16(n) => n.to_be_bytes().to_vec(),
-            Number::U32(n) => n.to_be_bytes().to_vec(),
-            Number::U64(n) => n.to_be_bytes().to_vec(),
+            Number::U16(n) => n.to_ne_bytes().to_vec(),
+            Number::U32(n) => n.to_ne_bytes().to_vec(),
+            Number::U64(n) => n.to_ne_bytes().to_vec(),
             Number::UXX(n) => n.clone(),
 
-            Number::I8(n)  => n.to_be_bytes().to_vec(),
-            Number::I16(n) => n.to_be_bytes().to_vec(),
-            Number::I32(n) => n.to_be_bytes().to_vec(),
-            Number::I64(n) => n.to_be_bytes().to_vec(),
+            Number::I8(n)  => n.to_ne_bytes().to_vec(),
+            Number::I16(n) => n.to_ne_bytes().to_vec(),
+            Number::I32(n) => n.to_ne_bytes().to_vec(),
+            Number::I64(n) => n.to_ne_bytes().to_vec(),
             Number::IXX(n) => n.clone(),
 
             Number::F8(n)  => vec![*n],
-            Number::F16(n) => n.to_be_bytes().to_vec(),
-            Number::F32(n) => n.to_be_bytes().to_vec(),
-            Number::F64(n) => n.to_be_bytes().to_vec(),
+            Number::F16(n) => n.to_ne_bytes().to_vec(),
+            Number::F32(n) => n.to_ne_bytes().to_vec(),
+            Number::F64(n) => n.to_ne_bytes().to_vec(),
             Number::FXX(n, _, _) => n.clone(),
         }
     }
@@ -205,19 +194,19 @@ impl Number {
             Number::U16(_) => Type::U16,
             Number::U32(_) => Type::U32,
             Number::U64(_) => Type::U64,
-            Number::UXX(s) => Type::UXX(TypeSize::Constant(s.len() as u64)),
+            Number::UXX(s) => Type::UXX(s.len() as u64),
 
             Number::I8(_)  => Type::I8,
             Number::I16(_) => Type::I16,
             Number::I32(_) => Type::I32,
             Number::I64(_) => Type::I64,
-            Number::IXX(s) => Type::IXX(TypeSize::Constant(s.len() as u64)),
+            Number::IXX(s) => Type::IXX(s.len() as u64),
 
             Number::F8(_)  => Type::F8,
             Number::F16(_) => Type::F16,
             Number::F32(_) => Type::F32,
             Number::F64(_) => Type::F64,
-            Number::FXX(_, e, m) => Type::FXX(TypeSize::Constant(*e), TypeSize::Constant(*m)),
+            Number::FXX(_, e, m) => Type::FXX(*e, *m),
         }
     }
 }
@@ -241,7 +230,7 @@ impl Hash for Number {
             Number::F16(n) => n.to_bits().hash(h),
             Number::F32(n) => n.to_bits().hash(h),
             Number::F64(n) => n.to_bits().hash(h),
-            Number::FXX(n, e, m) => vex![; e.to_be_bytes().to_vec(), m.to_be_bytes().to_vec(), n.clone()].hash(h),
+            Number::FXX(n, e, m) => vex![; e.to_ne_bytes().to_vec(), m.to_ne_bytes().to_vec(), n.clone()].hash(h),
         }
     }
 }
@@ -287,7 +276,7 @@ impl PartialEq for Number {
 
 impl Eq for Number {}
 
-#[derive(Clone, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum Data {
     Number(Number),
     Name(String),
@@ -311,6 +300,8 @@ impl Data {
                 bytes.append(&mut WrapperCore::index_to_bytes(name.len()));
                 bytes.append(&mut name.as_bytes().to_vec());
             }
+            // TODO MUST FIX BEFORE PARSER: figure out how to make string constants less dumb
+            // probably just make all simple values (numbers lol) stored directly instead of by reference
             Data::Array(values) => {
                 bytes.push(0x02);
                 bytes.append(&mut WrapperCore::index_to_bytes(values.len()));
@@ -347,7 +338,7 @@ impl Data {
     }
 }
 
-#[derive(Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct FuncRef {
     pub module: Vec<String>,
     pub function: Vec<String>,
@@ -374,7 +365,7 @@ impl FuncRef {
     }
 }
 
-#[derive(Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct StructRef {
     pub module: Vec<String>,
     pub function: Vec<String>,
