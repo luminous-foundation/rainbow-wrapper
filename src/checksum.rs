@@ -8,10 +8,10 @@ impl ChecksumChunk {
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut self.checksum.to_be_bytes().to_vec());
+        bytes.append(&mut self.checksum.to_ne_bytes().to_vec());
 
         for checksum in &self.chunk_checksums {
-            bytes.append(&mut checksum.to_be_bytes().to_vec());
+            bytes.append(&mut checksum.to_ne_bytes().to_vec());
         }
 
         return bytes;
