@@ -23,7 +23,15 @@ impl CodeChunk {
         self.blocks.push(CodeBlock::Scope(chunk));
     }
 
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn add_function(&mut self, func: Function) {
+        self.functions.push(func);
+    }
+
+    pub fn add_struct(&mut self, strct: Struct) {
+        self.structs.push(strct);
+    }
+
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         if self.has_parent {
@@ -32,15 +40,15 @@ impl CodeChunk {
             bytes.push(0x00);
         }
 
-        for structt in &self.structs {
+        for structt in self.structs {
             bytes.append(&mut structt.to_bytes(wrapper));
         }
 
-        for function in & self.functions {
+        for function in self.functions {
             bytes.append(&mut function.to_bytes(wrapper));
         }
 
-        for block in &self.blocks {
+        for block in self.blocks {
             bytes.append(&mut block.to_bytes(wrapper));
         }
 
@@ -103,12 +111,12 @@ pub struct Function {
 }
 
 impl Function {
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![0xFB];
 
         bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));
 
-        for arg in &self.args {
+        for arg in self.args {
             bytes.append(&mut arg.0.to_bytes(wrapper));
             bytes.append(&mut wrapper.add_data(Data::Name(arg.1.clone())));
         }
@@ -116,7 +124,7 @@ impl Function {
         bytes.push(0xFA);
 
         bytes.push(0xFF);
-        bytes.append(&mut self.body.to_bytes(wrapper));
+        bytes.append(&mut wrapper.add_chunk(Chunk::Code(self.body)));
         bytes.push(0xFE);
 
         return bytes;
