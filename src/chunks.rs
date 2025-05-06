@@ -2,7 +2,7 @@ use std::hash::{Hash, Hasher};
 
 use half::f16;
 
-use crate::{checksum::ChecksumChunk, code::CodeChunk, conditional_parsing::ConditionalParsingChunk, data::DataChunk, metadata::MetadataChunk, modules::ModuleChunk, runtime_constants::RuntimeConstantChunk, type_cast::TypeCastChunk, WrapperCore};
+use crate::{code::CodeChunk, conditional_parsing::ConditionalParsingChunk, data::DataChunk, metadata::MetadataChunk, modules::ModuleChunk, runtime_constants::RuntimeConstantChunk, type_cast::TypeCastChunk, WrapperCore};
 
 /// The `Chunk` enum
 /// Defines every type of data chunk present in a Rainbow file
@@ -12,44 +12,55 @@ pub enum Chunk {
     Module(ModuleChunk),
     Data(DataChunk),
     Metadata(MetadataChunk),
-    Checksum(ChecksumChunk),
     TypeCast(TypeCastChunk),
     ConditionalParsing(ConditionalParsingChunk),
     RuntimeConstant(RuntimeConstantChunk),
 }
 
 impl Chunk {
-    pub fn to_bytes(&mut self, wrapper: &mut WrapperCore) -> Vec<u8> {
-        let mut chunk_bytes = match self {
-            Chunk::Code(c)               => c.to_bytes(wrapper),
-            Chunk::Module(c)             => c.to_bytes(wrapper),
-            Chunk::Data(c)               => c.to_bytes(wrapper),
-            Chunk::Metadata(c)           => c.to_bytes(),
-            Chunk::Checksum(c)           => c.to_bytes(),
-            Chunk::TypeCast(c)           => c.to_bytes(wrapper),
-            Chunk::ConditionalParsing(c) => c.to_bytes(wrapper),
-            Chunk::RuntimeConstant(c)    => c.to_bytes(wrapper),
-        };
-
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         match self {
             Chunk::Code(_)               => bytes.push(0x00),
             Chunk::Module(_)             => bytes.push(0x01),
             Chunk::Data(_)               => bytes.push(0x02),
             Chunk::Metadata(_)           => bytes.push(0x03),
-            Chunk::Checksum(_)           => bytes.push(0x04),
-            Chunk::TypeCast(_)           => bytes.push(0x05),
-            Chunk::ConditionalParsing(_) => bytes.push(0x06),
-            Chunk::RuntimeConstant(_)    => bytes.push(0x07),
+            Chunk::TypeCast(_)           => bytes.push(0x04),
+            Chunk::ConditionalParsing(_) => bytes.push(0x05),
+            Chunk::RuntimeConstant(_)    => bytes.push(0x06),
         };
-        
-        match self {
-            Chunk::Code(_) | Chunk::Module(_) => bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len() - 1)),
-            _ => bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len())),
+
+        let mut sub_one = false;
+        let mut chunk_bytes = match self {
+            Chunk::Code(c)               => { sub_one = true; c.to_bytes(wrapper) },
+            Chunk::Module(c)             => { sub_one = true; c.to_bytes(wrapper) },
+            Chunk::Data(c)               => c.to_bytes(wrapper),
+            Chunk::Metadata(c)           => c.to_bytes(),
+            Chunk::TypeCast(c)           => c.to_bytes(wrapper),
+            Chunk::ConditionalParsing(c) => c.to_bytes(wrapper),
+            Chunk::RuntimeConstant(c)    => c.to_bytes(wrapper),
+        };
+
+        if sub_one {
+            bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len() - 1));
+        } else {
+            bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len()));
         }
         bytes.append(&mut chunk_bytes);
 
         return bytes;
+    }
+
+    pub fn get_name(&self) -> &'static str {
+        match self {
+            Chunk::Code(_)               => "Code",
+            Chunk::Module(_)             => "Module",
+            Chunk::Data(_)               => "Data",
+            Chunk::Metadata(_)           => "Metadata",
+            Chunk::TypeCast(_)           => "TypeCast",
+            Chunk::ConditionalParsing(_) => "ConditionalParsing",
+            Chunk::RuntimeConstant(_)    => "RuntimeConstant",
+        }
     }
 }
 

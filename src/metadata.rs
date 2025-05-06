@@ -10,10 +10,10 @@ impl MetadataChunk {
         MetadataChunk { metadata: Vec::new() }
     }
 
-    pub fn to_bytes(&self) -> Vec<u8> {
+    pub fn to_bytes(self) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        for data in &self.metadata {
+        for data in self.metadata {
             bytes.append(&mut data.to_bytes());
         }
 
