@@ -626,6 +626,2747 @@ pub enum Instruction {
     GENTYPE_MODIFY_S_S_S /*pop*/ /*pop*/ /*push*/ ,
 }
 
+// TODO
+#[macro_export]
+macro_rules! number {
+    (u8 $v:expr) => {
+        {
+            let v: u8 = $v;
+            rainbow_wrapper::chunks::Number::U8(v)
+        }
+    };
+    (u16 $v:expr) => {
+        {
+            let v: u16 = $v;
+            rainbow_wrapper::chunks::Number::U16(v)
+        }
+    };
+    (u32 $v:expr) => {
+        {
+            let v: u32 = $v;
+            rainbow_wrapper::chunks::Number::U32(v)
+        }
+    };
+    (u64 $v:expr) => {
+        {
+            let v: u64 = $v;
+            rainbow_wrapper::chunks::Number::U64(v)
+        }
+    };
+    (i8 $v:expr) => {
+        {
+            let v: i8 = $v;
+            rainbow_wrapper::chinks::Number::I8(v)
+        }
+    };
+    (i16 $v:expr) => {
+        {
+            let v: i16 = $v;
+            rainbow_wrapper::chinks::Number::I16(v)
+        }
+    };
+    (i32 $v:expr) => {
+        {
+            let v: i32 = $v;
+            rainbow_wrapper::chinks::Number::I32(v)
+        }
+    };
+    (i64 $v:expr) => {
+        {
+            let v: i64 = $v;
+            rainbow_wrapper::chinks::Number::I64(v)
+        }
+    };
+    (f8 $v:expr) => {
+        {
+            let v: f8 = $v;
+            rainbow_wrapper::chfnks::Number::F8(v)
+        }
+    };
+    (f16 $v:expr) => {
+        {
+            let v: f16 = $v;
+            rainbow_wrapper::chfnks::Number::F16(v)
+        }
+    };
+    (f32 $v:expr) => {
+        {
+            let v: f32 = $v;
+            rainbow_wrapper::chfnks::Number::F32(v)
+        }
+    };
+    (f64 $v:expr) => {
+        {
+            let v: f64 = $v;
+            rainbow_wrapper::chfnks::Number::F64(v)
+        }
+    };
+}
+
+// TODO
+#[macro_export]
+macro_rules! rbtype {
+    () => {
+        
+    };
+}
+
+// generated codeeeeeeee
+#[macro_export]
+macro_rules! nop {
+    () => {
+        Instruction::NOP
+    };
+}
+
+#[macro_export]
+macro_rules! mov {
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::MOV_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::MOV_C_V(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! push {
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::PUSH_V(a)
+    }};
+    ($t0:ident $a:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::PUSH_C(a)
+    }};
+}
+
+#[macro_export]
+macro_rules! pop {
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::POP(a)
+    }};
+}
+
+#[macro_export]
+macro_rules! dup {
+    () => {
+        Instruction::DUP
+    };
+}
+
+#[macro_export]
+macro_rules! swap {
+    () => {
+        Instruction::SWAP
+    };
+}
+
+#[macro_export]
+macro_rules! drop {
+    () => {
+        Instruction::DROP
+    };
+}
+
+#[macro_export]
+macro_rules! buff {
+    (pop, pop, push) => {{
+        Instruction::BUFF_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::BUFF_V_S_S(a)
+    }};
+    (($a:ident), pop, push) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        Instruction::BUFF_T_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::BUFF_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::BUFF_V_V_S(a, b)
+    }};
+    (($a:ident), $b:expr, push) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b: String = $b.to_string(); // type checking
+        Instruction::BUFF_T_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::BUFF_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::BUFF_V_C_S(a, b)
+    }};
+    (($a:ident), $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::BUFF_T_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_V_S_V(a, c)
+    }};
+    (($a:ident), pop, $c:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_T_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_V_V_V(a, b, c)
+    }};
+    (($a:ident), $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_T_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_V_C_V(a, b, c)
+    }};
+    (($a:ident), $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::BUFF_T_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! memcopy {
+    (pop, pop, push) => {{
+        Instruction::MEMCOPY_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::MEMCOPY_V_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::MEMCOPY_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::MEMCOPY_V_V_S(a, b)
+    }};
+    (pop, pop, $t2:ident $c:expr) => {{
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::MEMCOPY_S_S_C(c)
+    }};
+    ($a:expr, pop, $t2:ident $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::MEMCOPY_V_S_C(a, c)
+    }};
+    (pop, $b:expr, $t2:ident $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::MEMCOPY_S_V_C(b, c)
+    }};
+    ($a:expr, $b:expr, $t2:ident $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::MEMCOPY_V_V_C(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! deref {
+    (pop, push) => {{
+        Instruction::DEREF_S_S
+    }};
+    ($a:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::DEREF_V_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::DEREF_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::DEREF_V_V(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! r#ref {
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::REF_S_V(a)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::REF_V_V(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! pmov {
+    (pop, pop, pop) => {{
+        Instruction::PMOV_S_S_S
+    }};
+    ($a:expr, pop, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::PMOV_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::PMOV_C_S_S(a)
+    }};
+    (pop, $b:expr, pop) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::PMOV_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::PMOV_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::PMOV_C_V_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::PMOV_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PMOV_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PMOV_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PMOV_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PMOV_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PMOV_C_V_V(a, b, c)
+    }};
+    (pop, pop, $t2:ident $c:expr) => {{
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::PMOV_S_S_C(c)
+    }};
+    ($a:expr, pop, $t2:ident $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::PMOV_V_S_C(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $t2:ident $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::PMOV_C_S_C(a, c)
+    }};
+    (pop, $b:expr, $t2:ident $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::PMOV_S_V_C(b, c)
+    }};
+    ($a:expr, $b:expr, $t2:ident $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::PMOV_V_V_C(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $t2:ident $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::PMOV_C_V_C(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! data {
+    (pop, pop, push) => {{
+        Instruction::DATA_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::DATA_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::DATA_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::DATA_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::DATA_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::DATA_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::DATA_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::DATA_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::DATA_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DATA_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! add {
+    (pop, pop, push) => {{
+        Instruction::ADD_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::ADD_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::ADD_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::ADD_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::ADD_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::ADD_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::ADD_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::ADD_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::ADD_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::ADD_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! sub {
+    (pop, pop, push) => {{
+        Instruction::SUB_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::SUB_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::SUB_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::SUB_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::SUB_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::SUB_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::SUB_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::SUB_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::SUB_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::SUB_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! mul {
+    (pop, pop, push) => {{
+        Instruction::MUL_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::MUL_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::MUL_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::MUL_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::MUL_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::MUL_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::MUL_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::MUL_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::MUL_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MUL_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! div {
+    (pop, pop, push) => {{
+        Instruction::DIV_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::DIV_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::DIV_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::DIV_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::DIV_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::DIV_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::DIV_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::DIV_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::DIV_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::DIV_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! r#mod {
+    (pop, pop, push) => {{
+        Instruction::MOD_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::MOD_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::MOD_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::MOD_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::MOD_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::MOD_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::MOD_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::MOD_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::MOD_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::MOD_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! and {
+    (pop, pop, push) => {{
+        Instruction::AND_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::AND_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::AND_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::AND_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::AND_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::AND_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::AND_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::AND_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::AND_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::AND_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! or {
+    (pop, pop, push) => {{
+        Instruction::OR_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::OR_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::OR_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::OR_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::OR_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::OR_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::OR_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::OR_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::OR_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::OR_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! not {
+    (pop, push) => {{
+        Instruction::NOT_S_S
+    }};
+    ($a:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::NOT_V_S(a)
+    }};
+    ($t0:ident $a:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::NOT_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::NOT_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::NOT_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::NOT_C_V(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! xor {
+    (pop, pop, push) => {{
+        Instruction::XOR_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::XOR_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::XOR_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::XOR_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::XOR_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::XOR_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::XOR_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::XOR_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::XOR_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::XOR_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! lsh {
+    (pop, pop, push) => {{
+        Instruction::LSH_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::LSH_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::LSH_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::LSH_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::LSH_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::LSH_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::LSH_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::LSH_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::LSH_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::LSH_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! rsh {
+    (pop, pop, push) => {{
+        Instruction::RSH_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::RSH_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::RSH_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::RSH_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::RSH_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::RSH_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::RSH_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::RSH_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::RSH_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::RSH_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! padd {
+    (pop, pop, push) => {{
+        Instruction::PADD_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::PADD_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::PADD_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::PADD_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::PADD_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::PADD_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PADD_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PADD_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PADD_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PADD_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! psub {
+    (pop, pop, push) => {{
+        Instruction::PSUB_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::PSUB_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::PSUB_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::PSUB_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::PSUB_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::PSUB_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PSUB_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PSUB_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PSUB_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PSUB_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! pdiff {
+    (pop, pop, push) => {{
+        Instruction::PDIFF_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::PDIFF_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::PDIFF_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::PDIFF_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::PDIFF_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::PDIFF_C_V_S(a, b)
+    }};
+    (pop, $t1:ident $b:expr, push) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PDIFF_S_C_S(b)
+    }};
+    ($a:expr, $t1:ident $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PDIFF_V_C_S(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::PDIFF_C_C_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_C_V_V(a, b, c)
+    }};
+    (pop, $t1:ident $b:expr, $c:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_S_C_V(b, c)
+    }};
+    ($a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_V_C_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        let c: String = $c.to_string(); // type checking
+        Instruction::PDIFF_C_C_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! var {
+    (pop, pop) => {{
+        Instruction::VAR_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::VAR_V_S(a)
+    }};
+    (($a:ident), pop) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        Instruction::VAR_T_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::VAR_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::VAR_V_V(a, b)
+    }};
+    (($a:ident), $b:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b: String = $b.to_string(); // type checking
+        Instruction::VAR_T_V(a, b)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::VAR_S_N(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::VAR_V_N(a, b)
+    }};
+    (($a:ident), $b:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b: String = $b.to_string(); // type checking
+        Instruction::VAR_T_N(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! varexists {
+    (pop) => {{
+        Instruction::VAREXISTS_S
+    }};
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::VAREXISTS_V(a)
+    }};
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::VAREXISTS_N(a)
+    }};
+}
+
+#[macro_export]
+macro_rules! getfield {
+    (pop, pop, push) => {{
+        Instruction::GETFIELD_OFFSET_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_V_S_S(a)
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_N_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_V_V_S(a, b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_N_V_S(a, b)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: StructRef = $b; // type checking
+        Instruction::GETFIELD_OFFSET_S_D_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        Instruction::GETFIELD_OFFSET_V_D_S(a, b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        Instruction::GETFIELD_OFFSET_N_D_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_V_S_V(a, c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_N_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_V_V_V(a, b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_N_V_V(a, b, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: StructRef = $b; // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_S_D_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_V_D_V(a, b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_OFFSET_N_D_V(a, b, c)
+    }};
+    (pop, pop, push) => {{
+        Instruction::GETFIELD_VALUE_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::GETFIELD_VALUE_C_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, push) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_C_V_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_VALUE_C_V_V(a, b, c)
+    }};
+    (pop, pop, push) => {{
+        Instruction::GETFIELD_INDEX_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_V_S_S(a)
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_N_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_V_V_S(a, b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_N_V_S(a, b)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: StructRef = $b; // type checking
+        Instruction::GETFIELD_INDEX_S_D_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        Instruction::GETFIELD_INDEX_V_D_S(a, b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        Instruction::GETFIELD_INDEX_N_D_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_V_S_V(a, c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_N_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_V_V_V(a, b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_N_V_V(a, b, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: StructRef = $b; // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_S_D_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_V_D_V(a, b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: StructRef = $b; // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::GETFIELD_INDEX_N_D_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! setfeild {
+    (pop, pop, pop) => {{
+        Instruction::SETFEILD_S_S_S
+    }};
+    ($a:expr, pop, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::SETFEILD_V_S_S(a)
+    }};
+    ($t0:ident $a:expr, pop, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::SETFEILD_C_S_S(a)
+    }};
+    (pop, $b:expr, pop) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::SETFEILD_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::SETFEILD_V_V_S(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::SETFEILD_C_V_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::SETFEILD_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SETFEILD_V_S_V(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c: String = $c.to_string(); // type checking
+        Instruction::SETFEILD_C_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SETFEILD_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SETFEILD_V_V_V(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::SETFEILD_C_V_V(a, b, c)
+    }};
+    (pop, pop, $t2:ident $c:expr) => {{
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::SETFEILD_S_S_C(c)
+    }};
+    ($a:expr, pop, $t2:ident $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::SETFEILD_V_S_C(a, c)
+    }};
+    ($t0:ident $a:expr, pop, $t2:ident $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::SETFEILD_C_S_C(a, c)
+    }};
+    (pop, $b:expr, $t2:ident $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::SETFEILD_S_V_C(b, c)
+    }};
+    ($a:expr, $b:expr, $t2:ident $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::SETFEILD_V_V_C(a, b, c)
+    }};
+    ($t0:ident $a:expr, $b:expr, $t2:ident $c:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        let c = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t2 $c));
+        Instruction::SETFEILD_C_V_C(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! call {
+    (pop) => {{
+        Instruction::CALL_S
+    }};
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::CALL_V(a)
+    }};
+    ($a:expr) => {{
+        let a: FuncRef = $a; // type checking
+        Instruction::CALL_F(a)
+    }};
+}
+
+#[macro_export]
+macro_rules! syscall {
+    (pop) => {{
+        Instruction::SYSCALL_S
+    }};
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::SYSCALL_V(a)
+    }};
+    ($t0:ident $a:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::SYSCALL_C(a)
+    }};
+}
+
+#[macro_export]
+macro_rules! ret {
+    (pop) => {{
+        Instruction::RETURN_S
+    }};
+    ($a:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::RETURN_V(a)
+    }};
+    ($t0:ident $a:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::RETURN_C(a)
+    }};
+}
+
+#[macro_export]
+macro_rules! jmp {
+    (pop) => {{
+        Instruction::JMP_S
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::JMP_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::JMP_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::JMP_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JMP_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JMP_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JMP_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! cmp {
+    (pop, pop) => {{
+        Instruction::CMP_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::CMP_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::CMP_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::CMP_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::CMP_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::CMP_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::CMP_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::CMP_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::CMP_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! clr {
+    () => {
+        Instruction::CLR
+    };
+}
+
+#[macro_export]
+macro_rules! je {
+    (pop, pop) => {{
+        Instruction::JE_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::JE_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::JE_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::JE_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::JE_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::JE_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JE_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JE_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JE_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! jne {
+    (pop, pop) => {{
+        Instruction::JNE_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::JNE_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::JNE_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::JNE_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::JNE_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::JNE_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JNE_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JNE_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JNE_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! jl {
+    (pop, pop) => {{
+        Instruction::JL_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::JL_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::JL_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::JL_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::JL_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::JL_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JL_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JL_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JL_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! jle {
+    (pop, pop) => {{
+        Instruction::JLE_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::JLE_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::JLE_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::JLE_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::JLE_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::JLE_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JLE_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JLE_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JLE_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! jg {
+    (pop, pop) => {{
+        Instruction::JG_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::JG_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::JG_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::JG_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::JG_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::JG_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JG_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JG_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JG_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! jge {
+    (pop, pop) => {{
+        Instruction::JGE_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::JGE_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::JGE_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::JGE_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::JGE_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::JGE_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JGE_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JGE_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::JGE_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! assert {
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::ASSERT_P_C(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::ASSERT_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::ASSERT_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! cast {
+    (pop, pop, push) => {{
+        Instruction::CAST_S_S_S
+    }};
+    ($a:expr, pop, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::CAST_V_S_S(a)
+    }};
+    (($a:ident), pop, push) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        Instruction::CAST_T_S_S(a)
+    }};
+    (pop, $b:expr, push) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::CAST_S_V_S(b)
+    }};
+    ($a:expr, $b:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::CAST_V_V_S(a, b)
+    }};
+    (($a:ident), $b:expr, push) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b: String = $b.to_string(); // type checking
+        Instruction::CAST_T_V_S(a, b)
+    }};
+    (pop, pop, $c:expr) => {{
+        let c: String = $c.to_string(); // type checking
+        Instruction::CAST_S_S_V(c)
+    }};
+    ($a:expr, pop, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::CAST_V_S_V(a, c)
+    }};
+    (($a:ident), pop, $c:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let c: String = $c.to_string(); // type checking
+        Instruction::CAST_T_S_V(a, c)
+    }};
+    (pop, $b:expr, $c:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::CAST_S_V_V(b, c)
+    }};
+    ($a:expr, $b:expr, $c:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::CAST_V_V_V(a, b, c)
+    }};
+    (($a:ident), $b:expr, $c:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b: String = $b.to_string(); // type checking
+        let c: String = $c.to_string(); // type checking
+        Instruction::CAST_T_V_V(a, b, c)
+    }};
+}
+
+#[macro_export]
+macro_rules! r#typeof {
+    (pop, push) => {{
+        Instruction::TYPEOF_S_S
+    }};
+    ($a:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::TYPEOF_V_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPEOF_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPEOF_V_V(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! typecmp {
+    (pop, pop) => {{
+        Instruction::TYPECMP_LOOSE_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::TYPECMP_LOOSE_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::TYPECMP_LOOSE_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_LOOSE_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_LOOSE_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_LOOSE_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_LOOSE_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_LOOSE_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_LOOSE_C_C(a, b)
+    }};
+    (pop, pop) => {{
+        Instruction::TYPECMP_STRUCT_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::TYPECMP_STRUCT_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::TYPECMP_STRUCT_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_STRUCT_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_STRUCT_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_STRUCT_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_STRUCT_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_STRUCT_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_STRUCT_C_C(a, b)
+    }};
+    (pop, pop) => {{
+        Instruction::TYPECMP_STRICT_S_S
+    }};
+    ($a:expr, pop) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::TYPECMP_STRICT_V_S(a)
+    }};
+    ($t0:ident $a:expr, pop) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        Instruction::TYPECMP_STRICT_C_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_STRICT_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_STRICT_V_V(a, b)
+    }};
+    ($t0:ident $a:expr, $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b: String = $b.to_string(); // type checking
+        Instruction::TYPECMP_STRICT_C_V(a, b)
+    }};
+    (pop, $t1:ident $b:expr) => {{
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_STRICT_S_C(b)
+    }};
+    ($a:expr, $t1:ident $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_STRICT_V_C(a, b)
+    }};
+    ($t0:ident $a:expr, $t1:ident $b:expr) => {{
+        let a = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t0 $a));
+        let b = rainbow_wrapper::chunks::Data::Number(rainbow_wrapper::number!($t1 $b));
+        Instruction::TYPECMP_STRICT_C_C(a, b)
+    }};
+}
+
+#[macro_export]
+macro_rules! sizeof {
+    (pop, push) => {{
+        Instruction::SIZEOF_VAR_S_S
+    }};
+    ($a:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::SIZEOF_VAR_V_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::SIZEOF_VAR_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::SIZEOF_VAR_V_V(a, b)
+    }};
+    (pop, push) => {{
+        Instruction::SIZEOF_TYPE_S_S
+    }};
+    ($a:expr, push) => {{
+        let a: String = $a.to_string(); // type checking
+        Instruction::SIZEOF_TYPE_V_S(a)
+    }};
+    (($a:ident), push) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        Instruction::SIZEOF_TYPE_T_S(a)
+    }};
+    (pop, $b:expr) => {{
+        let b: String = $b.to_string(); // type checking
+        Instruction::SIZEOF_TYPE_S_V(b)
+    }};
+    ($a:expr, $b:expr) => {{
+        let a: String = $a.to_string(); // type checking
+        let b: String = $b.to_string(); // type checking
+        Instruction::SIZEOF_TYPE_V_V(a, b)
+    }};
+    (($a:ident), $b:expr) => {{
+        let a = rainbow_wrapper::rbtype!($a);
+        let b: String = $b.to_string(); // type checking
+        Instruction::SIZEOF_TYPE_T_V(a, b)
+    }};
+}
+
 // dont worry, this is all generated
 impl Instruction {
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
