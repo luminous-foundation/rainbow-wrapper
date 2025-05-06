@@ -1,3 +1,5 @@
+use std::process::exit;
+
 use crate::{chunks::{Chunk, Data, FuncRef, StructRef, Type}, code::CodeChunk, WrapperCore};
 
 #[derive(Debug, Clone)]
@@ -5,7 +7,9 @@ pub struct ModuleChunk {
     pub name: String,
     pub has_parent: bool,
 
-    pub blocks: Vec<ModuleBlock>,
+    pub code_chunk: Option<CodeChunk>,
+
+    pub submodules: Vec<ModuleChunk>,
     pub imports: Vec<Import>,
     pub exports: Vec<Item>,
     pub externs: Vec<Extern>,
@@ -17,21 +21,43 @@ impl ModuleChunk {
             name,
             has_parent,
 
-            blocks:  Vec::new(),
+            code_chunk: None,
+
+            submodules:  Vec::new(),
             imports: Vec::new(),
             exports: Vec::new(),
             externs: Vec::new(),
         }
     }
 
-    pub fn add_code(&mut self, chunk: CodeChunk) {
-        self.blocks.push(ModuleBlock::Code(chunk));
+    // i think these are only functions for consistency with other code
+    // honestly i dont remember but i started doing functions so im gonna keep doing functions
+    pub fn set_code(&mut self, mut chunk: CodeChunk) {
+        chunk.has_parent = true;
+        self.code_chunk = Some(chunk);
     }
 
-    pub fn to_bytes(&mut self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn add_module(&mut self, mut chunk: ModuleChunk) {
+        chunk.has_parent = true;
+        self.submodules.push(chunk);
+    }
+
+    pub fn add_import(&mut self, import: Import) {
+        self.imports.push(import);
+    }
+
+    pub fn add_export(&mut self, export: Item) {
+        self.exports.push(export);
+    }
+
+    pub fn add_extern(&mut self, xtern: Extern) {
+        self.externs.push(xtern);
+    }
+
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));
+        bytes.append(&mut wrapper.add_data(Data::Name(self.name)));
         
         if self.has_parent {
             bytes.push(0x01);
@@ -40,8 +66,17 @@ impl ModuleChunk {
         }
 
         let mut blocks: Vec<u8> = Vec::new();
-        for block in &mut self.blocks {
-            blocks.append(&mut block.to_bytes(wrapper));
+
+        if let Some(chunk) = self.code_chunk {
+            blocks.append(&mut wrapper.add_chunk(Chunk::Code(chunk)));
+        } else {
+            fox::scritical!("encountered a module chunk with no associated code chunk");
+            fox::scritical!("this is likely a bug");
+            exit(1);
+        }
+        
+        for module in self.submodules {
+            blocks.append(&mut wrapper.add_chunk(Chunk::Module(module))); 
         }
 
         bytes.push(0x00);
@@ -49,7 +84,7 @@ impl ModuleChunk {
         bytes.append(&mut blocks);
 
         let mut imports: Vec<u8> = Vec::new();
-        for import in &self.imports {
+        for import in self.imports {
             imports.append(&mut import.to_bytes(wrapper));
         }
 
@@ -58,7 +93,7 @@ impl ModuleChunk {
         bytes.append(&mut imports);
 
         let mut exports: Vec<u8> = Vec::new();
-        for export in &self.exports {
+        for export in self.exports {
             exports.append(&mut export.to_bytes(wrapper));
         }
 
@@ -67,7 +102,7 @@ impl ModuleChunk {
         bytes.append(&mut exports);
 
         let mut externs: Vec<u8> = Vec::new();
-        for item in &self.externs {
+        for item in self.externs {
             externs.append(&mut item.to_bytes(wrapper));
         }
 
@@ -80,46 +115,40 @@ impl ModuleChunk {
 }
 
 #[derive(Debug, Clone)]
-pub enum ModuleBlock {
-    Code(CodeChunk),
-    Module(ModuleChunk),
-}
-
-impl ModuleBlock {
-    pub fn to_bytes(&mut self, wrapper: &mut WrapperCore) -> Vec<u8> {
-        match self {
-            ModuleBlock::Code(chunk) => { chunk.has_parent = true; wrapper.add_chunk(Chunk::Code(chunk.clone())) }
-            ModuleBlock::Module(chunk) => { chunk.has_parent = true; wrapper.add_chunk(Chunk::Module(chunk.clone())) }
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
 pub enum Import {
-    ModuleImport(String, String, String), // path, name, as name
-    ItemImport(String, String, Item, String), // path, name, item, as name
+    ModuleImport {
+        path: String,
+        name: String, 
+        as_name: String
+    },
+    ItemImport {
+        path: String, 
+        name: String, 
+        item: Item, 
+        as_name: String
+    },
 }
 
 impl Import {
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         match self {
-            Import::ModuleImport(path, name, as_name) => {
-                bytes.append(&mut wrapper.add_data(Data::Name(path.clone())));
-                bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
-                bytes.append(&mut wrapper.add_data(Data::Name(as_name.clone())));
+            Import::ModuleImport { path, name, as_name } => {
+                bytes.append(&mut wrapper.add_data(Data::Name(path)));
+                bytes.append(&mut wrapper.add_data(Data::Name(name)));
+                bytes.append(&mut wrapper.add_data(Data::Name(as_name)));
             }
-            Import::ItemImport(path, name, item, as_name) => {
-                bytes.append(&mut wrapper.add_data(Data::Name(path.clone())));
-                bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
+            Import::ItemImport { path, name, item, as_name } => {
+                bytes.append(&mut wrapper.add_data(Data::Name(path)));
+                bytes.append(&mut wrapper.add_data(Data::Name(name)));
                 bytes.append(&mut item.to_bytes(wrapper));
-                bytes.append(&mut wrapper.add_data(Data::Name(as_name.clone())));
+                bytes.append(&mut wrapper.add_data(Data::Name(as_name)));
             }
         }
 
         return bytes;
-    } 
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -130,11 +159,11 @@ pub enum Item {
 }
 
 impl Item {
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         match self {
-            Item::Function(func_ref) => wrapper.add_data(Data::FuncRef(func_ref.clone())),
-            Item::Struct(struct_ref) => wrapper.add_data(Data::StructRef(struct_ref.clone())),
-            Item::Variable(name)     => wrapper.add_data(Data::Name(name.clone()))
+            Item::Function(func_ref) => wrapper.add_data(Data::FuncRef(func_ref)),
+            Item::Struct(struct_ref) => wrapper.add_data(Data::StructRef(struct_ref)),
+            Item::Variable(name)     => wrapper.add_data(Data::Name(name))
         }
     }
 }
@@ -148,18 +177,18 @@ pub struct Extern {
 }
 
 impl Extern {
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.path.clone())));
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));
+        bytes.append(&mut wrapper.add_data(Data::Name(self.path)));
+        bytes.append(&mut wrapper.add_data(Data::Name(self.name)));
 
         for arg in &self.args {
             bytes.append(&mut arg.to_bytes(wrapper));
         }
         bytes.push(0xFA);
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.as_name.clone())));
+        bytes.append(&mut wrapper.add_data(Data::Name(self.as_name)));
 
         return bytes;
     }
