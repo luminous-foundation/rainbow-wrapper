@@ -10,10 +10,10 @@ impl ConditionalParsingChunk {
         ConditionalParsingChunk { conditional_chunks: Vec::new() }
     }
 
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        for chunk in &self.conditional_chunks {
+        for chunk in self.conditional_chunks {
             bytes.append(&mut chunk.to_bytes(wrapper));
         }
 

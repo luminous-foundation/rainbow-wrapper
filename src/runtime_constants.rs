@@ -24,10 +24,10 @@ impl RuntimeConstantChunk {
         return chunk;
     }
 
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
     
-        for constant in &self.constants {
+        for constant in self.constants {
             bytes.append(&mut constant.to_bytes(wrapper));
         }
 

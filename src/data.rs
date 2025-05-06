@@ -24,10 +24,10 @@ impl DataChunk {
         return chunk;
     }
 
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        for value in &self.data {
+        for value in self.data {
             bytes.append(&mut value.to_bytes(wrapper));
         }
 
