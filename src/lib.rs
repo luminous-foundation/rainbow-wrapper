@@ -6,7 +6,7 @@ use conditional_parsing::ConditionalParsingChunk;
 use data::DataChunk;
 use indexmap::IndexSet;
 use instructions::Instruction;
-use metadata::MetadataChunk;
+use metadata::{Metadata, MetadataChunk};
 use modules::{Extern, Import, Item, ModuleChunk};
 use runtime_constants::{RuntimeConstant, RuntimeConstantChunk};
 use type_cast::TypeCastChunk;
@@ -47,7 +47,9 @@ pub struct Wrapper {
     function_stack: Vec<String>,
 
     struct_name: String,
-    struct_vars: Vec<(Type, String, Option<Data>)>
+    struct_vars: Vec<(Type, String, Option<Data>)>,
+
+    metadata_chunk: MetadataChunk,
 }
 
 macro_rules! verify_last_chunk {
@@ -89,6 +91,8 @@ impl Wrapper {
 
             struct_name: String::new(),
             struct_vars: Vec::new(),
+            
+            metadata_chunk: MetadataChunk { metadata: Vec::new() },
         }
     }
 
@@ -411,6 +415,19 @@ impl Wrapper {
         self.chunk_begin(Chunk::Metadata(MetadataChunk::new()));
     }
 
+    pub fn add_metadata(&mut self, value: String) {
+        self.metadata_chunk.metadata.push(Metadata::Element(self.chunk_index, self.element_index, value));
+    }
+
+    pub fn add_custom_metadata(&mut self, metadata: Metadata) {
+        let chunk = verify_last_chunk!(self, Metadata, "add metadata");
+        chunk.metadata.push(metadata);
+    }
+
+    pub fn metadata_end(&mut self) {
+        self.chunk_end();
+    }
+
     // type cast chunk
     pub fn type_cast_begin(&mut self) {
         if self.chunk_stack.len() > 0 {
@@ -437,10 +454,6 @@ impl Wrapper {
 
     // all of these `[chunk]_end` functions are just for consistency unless they have more functionality
     // i feel like a C# dev right now
-
-    pub fn metadata_end(&mut self) {
-        self.chunk_end();
-    }
 
     pub fn type_cast_end(&mut self) {
         self.chunk_end();
@@ -488,7 +501,7 @@ impl Wrapper {
         fox::sinfo!("chunk list contains [{chunks}]");
     }
 
-    pub fn emit(&mut self) -> Vec<u8> {
+    pub fn emit(mut self) -> Vec<u8> {
         if self.chunk_stack.len() > 0 {
             // TODO: better wording needed (what is a "wrapper chunk list"?)
             fox::swarn!("wrapper chunk list contained unfinished chunks, these chunks will be discarded");
@@ -505,6 +518,8 @@ impl Wrapper {
 
             fox::sinfo!("contained [{chunks}]");
         }
+
+        self.wrapper_core.chunks.push(Chunk::Metadata(self.metadata_chunk));
 
         self.wrapper_core.emit()
     }
@@ -600,7 +615,7 @@ impl WrapperCore {
         return (s2 << 16) | s1;
     }
 
-    pub fn emit(&mut self) -> Vec<u8> {
+    pub fn emit(mut self) -> Vec<u8> {
         let mut post_body: Vec<u8> = Vec::new();
 
         // the chunks are filled with dummy sets as they just need to exist to get populated later
@@ -610,7 +625,7 @@ impl WrapperCore {
         let mut i = 2;
         while i < self.chunks.len() {
             let chunk = self.chunks[i].clone(); // .clone() :why:
-            post_body.append(&mut chunk.to_bytes(self));
+            post_body.append(&mut chunk.to_bytes(&mut self));
             i += 1;
         }
 
@@ -618,8 +633,8 @@ impl WrapperCore {
         self.chunks[0] = Chunk::Data(DataChunk::from_set(&self.data));
         self.chunks[1] = Chunk::RuntimeConstant(RuntimeConstantChunk::from_set(&self.runtime_constants));
         let mut pre_body: Vec<u8> = Vec::new();
-        pre_body.append(&mut self.chunks[0].clone().to_bytes(self));
-        pre_body.append(&mut self.chunks[1].clone().to_bytes(self));
+        pre_body.append(&mut self.chunks[0].clone().to_bytes(&mut self));
+        pre_body.append(&mut self.chunks[1].clone().to_bytes(&mut self));
 
         let mut body = Vec::new();
         body.append(&mut pre_body);

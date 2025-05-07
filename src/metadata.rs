@@ -23,8 +23,9 @@ impl MetadataChunk {
 
 #[derive(Debug, Clone)]
 pub enum Metadata {
-    General(String, String),
-    Byte(usize, usize, String),
+    General(String, String), // key => value
+    Byte(usize, usize, String), // (chunk, byte_offset) => value
+    Element(usize, usize, String), // (chunk, element) => value
 }
 
 impl Metadata {
@@ -38,9 +39,15 @@ impl Metadata {
                 bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
                 bytes.append(&mut value.as_bytes().to_vec());
             }
-            Metadata::Byte(chunk, offset, value) => {
+            Metadata::Byte(chunk, byte_offset, value) => {
                 bytes.append(&mut WrapperCore::index_to_bytes(*chunk));
-                bytes.append(&mut WrapperCore::index_to_bytes(*offset));
+                bytes.append(&mut WrapperCore::index_to_bytes(*byte_offset));
+                bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
+                bytes.append(&mut value.as_bytes().to_vec());
+            }
+            Metadata::Element(chunk, element, value) => {
+                bytes.append(&mut WrapperCore::index_to_bytes(*chunk));
+                bytes.append(&mut WrapperCore::index_to_bytes(*element));
                 bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
                 bytes.append(&mut value.as_bytes().to_vec());
             }

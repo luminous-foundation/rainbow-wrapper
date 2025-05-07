@@ -3,6 +3,8 @@ use rainbow_wrapper::{add, chunks::Type, instructions::Instruction, je, jge, num
 pub fn main() {
     let mut test = Wrapper::new();
 
+    // fun fact: this whole thing is basically untested, i have no idea if the bytes it outputs are correct
+    //           i literally just see a bunch of numbers and assume that it looks good
     test.module_begin("test".to_string());
 
         test.add_instruction(add!(u8 2, u8 3, "first"));
@@ -25,8 +27,10 @@ pub fn main() {
 
         test.function_start("foo".to_string(), vec![]);
 
+            test.add_metadata("this is a function".to_string());
+            
         test.function_end();
-        
+
     test.module_end();
     
     test.type_cast_begin();
