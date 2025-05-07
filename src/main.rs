@@ -1,4 +1,4 @@
-use rainbow_wrapper::{add, instructions::Instruction, je, jge, Wrapper};
+use rainbow_wrapper::{add, chunks::Type, instructions::Instruction, je, jge, number, Data, Wrapper};
 
 pub fn main() {
     let mut test = Wrapper::new();
@@ -16,6 +16,12 @@ pub fn main() {
         test.code_end();
 
         test.add_instruction(jge!(pop, "fakeVar"));
+
+        test.struct_start("testStruct".to_string());
+
+            test.add_var(Type::U8, "a".to_string(), Some(Data::Number(number!(u8 32))));
+
+        test.struct_end();
 
         test.function_start("foo".to_string(), vec![]);
 
