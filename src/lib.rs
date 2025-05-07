@@ -1,7 +1,7 @@
 use std::process::exit;
 
 use chunks::{Chunk, FuncRef, StructRef, Type};
-use code::{CodeBlock, CodeChunk, Function};
+use code::{CodeBlock, CodeChunk, Function, Struct};
 use conditional_parsing::ConditionalParsingChunk;
 use data::DataChunk;
 use indexmap::IndexSet;
@@ -45,6 +45,9 @@ pub struct Wrapper {
     argument_stack: Vec<Vec<(Type, String)>>,
     module_stack: Vec<String>,
     function_stack: Vec<String>,
+
+    struct_name: String,
+    struct_vars: Vec<(Type, String, Option<Data>)>
 }
 
 macro_rules! verify_last_chunk {
@@ -54,13 +57,13 @@ macro_rules! verify_last_chunk {
             match chunk {
                 Chunk::$type(c) => c,
                 _ => {
-                    fox::scritical!("attempted to {} while not in a {} chunk", $action, stringify!($type).to_lowercase());
+                    fox::serror!("attempted to {} while not in a {} chunk", $action, stringify!($type).to_lowercase());
                     fox::sinfo!("current chunk is a `{}` chunk", chunk.get_name());
                     exit(1);
                 }
             }
         } else {
-            fox::scritical!("attempted to {} while not in a chunk", $action);
+            fox::serror!("attempted to {} while not in a chunk", $action);
             exit(1);
         }
     }};
@@ -83,6 +86,9 @@ impl Wrapper {
             argument_stack: Vec::new(),
             module_stack: Vec::new(),
             function_stack: Vec::new(),
+
+            struct_name: String::new(),
+            struct_vars: Vec::new(),
         }
     }
 
@@ -120,19 +126,20 @@ impl Wrapper {
                     code_block.push(inst);
                 }
                 _ => {
-                    fox::scritical!("attempted to add an instruction while not in a code chunk");
+                    fox::serror!("attempted to add an instruction while not in a code chunk");
                     fox::sinfo!("current chunk is a `{}` chunk", chunk.get_name());
                     exit(1);
                 }
             }
         } else {
-            fox::scritical!("attempted to add an instruction while not in a chunk");
+            fox::serror!("attempted to add an instruction while not in a chunk");
             exit(1);
         }
         self.instruction_index = self.element_index;
     }
     
     pub fn function_start(&mut self, name: String, args: Vec<(Type, String)>) {
+        verify_last_chunk!(self, Code, format!("create the function `{name}`"));
         self.function_stack.push(name);
         self.argument_stack.push(args);
         self.code_begin();
@@ -142,27 +149,28 @@ impl Wrapper {
         let name = if let Some(s) = self.function_stack.pop() {
             s
         } else {
-            fox::scritical!("no function name was found while trying to end a function");
+            fox::serror!("no function name was found while trying to end a function");
             fox::sinfo!("(did you forget to start the function?)");
             exit(1);
         };
         let args = if let Some(s) = self.argument_stack.pop() {
             s
         } else {
-            unreachable!("no function arguments were found while trying to end a function, this is probably a bug");
+            fox::scritical!("no function arguments were found while trying to end a function, this is probably a bug");
+            exit(1);
         };
         let body = if let Some(chunk) = self.chunk_stack.pop() {
             match chunk {
                 Chunk::Code(c) => c,
                 _ => {
-                    fox::scritical!("attempted to create the function `{name}` while not in a code chunk");
+                    fox::serror!("attempted to create the function `{name}` while not in a code chunk");
                     fox::sinfo!("current chunk is a `{}` chunk", chunk.get_name());
                     fox::sinfo!("(did you forget to end that chunk?)");
                     exit(1);
                 }
             }
         } else {
-            fox::scritical!("attempted to create the function `{name}` while not in a chunk");
+            fox::serror!("attempted to create the function `{name}` while not in a chunk");
             fox::sinfo!("(did you end an extra chunk?)");
             exit(1);
         };
@@ -182,6 +190,63 @@ impl Wrapper {
             name 
         }
     }
+    
+    pub fn struct_start(&mut self, name: String) {
+        if self.struct_vars.len() > 0 {
+            fox::serror!("attempted to start struct {name} while already in one");
+            fox::sinfo!("current struct name is {}", self.struct_name);
+            fox::sinfo!("(did you forget to end it?)");
+        }
+
+        verify_last_chunk!(self, Code, format!("create the struct `{name}`"));
+
+        self.struct_name = name;
+    }
+
+    pub fn add_var(&mut self, typ: Type, name: String, default: Option<Data>) {
+        match typ {
+            Type::Struct(_) => {
+                if let Some(_) = default {
+                    fox::swarn!("unexpected default value for field `{}` in struct `{}`", name, self.struct_name);
+                    fox::sinfo!("`struct` typed fields do not have a default value, so the provided value will be ignored");
+                    self.struct_vars.push((typ, name, None));
+                    return;
+                }
+            }
+            _ => {
+                if let Some(v) = &default {
+                    if v.get_type() != typ {
+                        fox::serror!("expected type `{}` for default value of field `{}` in struct `{}`, got `{}`", typ, name, self.struct_name, v.get_type());
+                        exit(1);
+                    }
+                } else {
+                    fox::serror!("expected default value for field `{}` in struct `{}`, got None", name, self.struct_name);
+                    exit(1);
+                }
+            }
+        }
+        self.struct_vars.push((typ, name, default));
+    }
+
+    pub fn struct_end(&mut self) -> StructRef {
+        let name = self.struct_name.clone();
+
+        let strct = Struct { 
+            name: name.clone(), 
+            vars: self.struct_vars.clone() 
+        };
+
+        self.struct_vars.clear();
+
+        let parent_chunk = verify_last_chunk!(self, Code, format!("create the struct `{name}`"));
+        parent_chunk.add_struct(strct);
+
+        StructRef { 
+            module: self.module_stack.clone(), 
+            function: self.function_stack.clone(), 
+            name
+        }
+    }
 
     pub fn code_end(&mut self) {
         // get the code chunk off of the chunk stack
@@ -190,14 +255,14 @@ impl Wrapper {
         // check if it exists
         if let Some(chunk) = chunk {
             // update the chunk index and element index
-            self.chunk_index = self.chunk_indices.pop().expect("somehow didn't have a chunk index in the list, this is probably a bug");
-            self.element_index = self.chunk_elements.pop().expect("somehow didn't have a chunk element count in the list, this is probably a bug");
+            self.chunk_index = if let Some(i) = self.chunk_indices.pop() { i } else { fox::scritical!("somehow didn't have a chunk index in the list, this is probably a bug"); exit(1); };
+            self.element_index = if let Some(i) = self.chunk_elements.pop() { i } else { fox::scritical!("somehow didn't have a chunk index in the list, this is probably a bug"); exit(1); };
             
             // get the `CodeChunk` out of the code chunk
             let chunk = match chunk {
                 Chunk::Code(c) => c,
                 _ => {
-                    fox::scritical!("ran `code_end` when not in code chunk");
+                    fox::serror!("ran `code_end` when not in code chunk");
                     fox::sinfo!("current chunk is a `{}` chunk", chunk.get_name());
                     fox::sinfo!("(did you forget to end that chunk?)");
                     exit(1);
@@ -213,16 +278,14 @@ impl Wrapper {
                     Chunk::Code(c) => c.add_scope(chunk),
                     Chunk::Module(c) => {
                         if let Some(_) = c.code_chunk {
-                            fox::scritical!("attempted to add a code chunk to a module that already has one");
+                            fox::serror!("attempted to add a code chunk to a module that already has one");
                             fox::sinfo!("module name is '{}'", c.name);
                             exit(1);
                         } else {
                             c.set_code(chunk);
                         }
                     }
-                    _ => unreachable!(
-                        "somehow nested a code block in a non-code block. this is probably a bug"
-                    ),
+                    _ => { fox::scritical!("somehow nested a code block in a non-code block. this is probably a bug"); exit(1); }
                 }
                 // blocks count as elements
                 self.element_index += 1;
@@ -231,7 +294,7 @@ impl Wrapper {
                 self.wrapper_core.add_chunk(Chunk::Code(chunk));
             }
         } else {
-            fox::serror!("attempted to end chunk but was not in one");
+            fox::swarn!("attempted to end chunk but was not in one");
         }
         // update instruction index
         self.instruction_index = self.element_index;
@@ -305,34 +368,36 @@ impl Wrapper {
 
         let chunk = self.chunk_stack.pop();
         if let Some(chunk) = chunk {
-            self.chunk_index = self.chunk_indices.pop().expect("somehow didn't have a chunk index in the list, this is probably a bug");
-            self.element_index = self.chunk_elements.pop().expect("somehow didn't have a chunk element count in the list, this is probably a bug");
+            // update the chunk index and the element index
+            self.chunk_index = if let Some(i) = self.chunk_indices.pop() { i } else { fox::scritical!("somehow didn't have a chunk index in the list, this is probably a bug"); exit(1); };
+            self.element_index = if let Some(i) = self.chunk_elements.pop() { i } else { fox::scritical!("somehow didn't have a chunk index in the list, this is probably a bug"); exit(1); };
+
             let chunk = match chunk {
                 Chunk::Module(c) => c,
                 _ => {
-                    fox::scritical!("ran `module_end` when not in module chunk");
+                    fox::serror!("ran `module_end` when not in module chunk");
                     fox::sinfo!("current chunk is a `{}` chunk", chunk.get_name());
                     fox::sinfo!("(did you forget to end that chunk?)");
                     exit(1);
                 }
             };
+
             let prev = self.chunk_stack.last_mut();
             if let Some(prev) = prev {
                 match prev {
                     Chunk::Module(c) => c.add_module(chunk),
-                    _ => unreachable!(
-                        "somehow nested a module block in a non-module block. this is probably a bug"
-                    ),
+                    _ => { fox::scritical!("somehow nested a module block in a non-code block. this is probably a bug"); exit(1); }
                 }
             } else {
                 self.chunk_index = self.raw_chunk_index;
                 self.wrapper_core.add_chunk(Chunk::Module(chunk));
             }
         } else {
-            fox::serror!("attempted to end chunk but was not in one");
+            fox::swarn!("attempted to end chunk but was not in one");
         }
         self.instruction_index = self.element_index;
     }
+
     // creating data section chunks manually is not supported here, as there is no way to use them
 
     // metadata chunk
@@ -400,16 +465,16 @@ impl Wrapper {
     fn chunk_end(&mut self) {
         if let Some(chunk) = self.chunk_stack.pop() {
             self.wrapper_core.add_chunk(chunk);
-            self.chunk_indices.pop().expect("somehow didn't have a chunk index in the list, this is probably a bug");
-            self.element_index = self.chunk_elements.pop().expect("somehow didn't have a chunk element count in the list, this is probably a bug");
+            self.chunk_index = if let Some(i) = self.chunk_indices.pop() { i } else { fox::scritical!("somehow didn't have a chunk index in the list, this is probably a bug"); exit(1); };
+            self.element_index = if let Some(i) = self.chunk_elements.pop() { i } else { fox::scritical!("somehow didn't have a chunk index in the list, this is probably a bug"); exit(1); };
             self.instruction_index = self.element_index;
         } else {
-            fox::serror!("attempted to end chunk but was not in one");
+            fox::swarn!("attempted to end chunk but was not in one");
         }
     }
 
     fn cannot_nest(&self, message: &str) {
-        fox::scritical!("{message}");
+        fox::serror!("{message}");
         let mut chunks = String::new();
         let mut i = 0;
         for chunk in &self.chunk_stack {

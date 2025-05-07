@@ -1,3 +1,5 @@
+use std::process::exit;
+
 use crate::{chunks::{Chunk, Data, Type}, instructions::Instruction, WrapperCore};
 
 #[derive(Debug, Clone)]
@@ -63,7 +65,7 @@ pub enum CodeBlock {
 }
 
 impl CodeBlock {
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         match self {
             CodeBlock::Code(instructions) => {
@@ -82,19 +84,43 @@ impl CodeBlock {
 
 #[derive(Debug, Clone)]
 pub struct Struct {
-    pub vars: Vec<(Type, String, Data)>,
+    pub name: String,
+    pub vars: Vec<(Type, String, Option<Data>)>,
 }
 
 impl Struct {
-    pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+    pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
+
+        // sanity check, as technically bad data could make it here
+        for var in &self.vars {
+            match var.0 {
+                Type::Struct(_) => {},
+                _ => {
+                    if let None = var.2 {
+                        fox::scritical!("field `{}` of struct `{}` was missing default value", var.0, self.name);
+                        exit(1);
+                    }
+                }
+            }
+        }
 
         bytes.push(0xFD);
 
-        for var in &self.vars {
+        bytes.append(&mut wrapper.add_data(Data::Name(self.name)));
+
+        for var in self.vars {
             bytes.append(&mut var.0.to_bytes(wrapper));
-            bytes.append(&mut wrapper.add_data(Data::Name(var.1.clone())));
-            bytes.append(&mut wrapper.add_data(var.2.clone()));
+            bytes.append(&mut wrapper.add_data(Data::Name(var.1)));
+
+            match var.0 {
+                Type::Struct(_) => {},
+                _ => {
+                    if let Some(default) = var.2 {
+                        bytes.append(&mut wrapper.add_data(default));
+                    }
+                }
+            }
         }
 
         bytes.push(0xFC);
