@@ -1,4 +1,4 @@
-use std::hash::{Hash, Hasher};
+use std::{fmt::Display, hash::{Hash, Hasher}};
 
 use half::f16;
 
@@ -91,6 +91,37 @@ pub enum Type {
 
     // modifiers
     Pointer(Box<Type>),
+}
+
+impl Display for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Type::Void => write!(f, "void"),
+            Type::U8 => write!(f, "u8"),
+            Type::U16 => write!(f, "u16"),
+            Type::U32 => write!(f, "u32"),
+            Type::U64 => write!(f, "u64"),
+            Type::UXX(size) => write!(f, "uXX({size})"),
+            Type::I8 => write!(f, "i8"),
+            Type::I16 => write!(f, "i16"),
+            Type::I32 => write!(f, "i32"),
+            Type::I64 => write!(f, "i64"),
+            Type::IXX(size) => write!(f, "iXX({size})"),
+            Type::F8 => write!(f, "f8"),
+            Type::F16 => write!(f, "f16"),
+            Type::F32 => write!(f, "f32"),
+            Type::F64 => write!(f, "f64"),
+            Type::FXX(exponent, mantissa) => write!(f, "fXX({exponent}, {mantissa})"),
+            Type::Struct(structref) => write!(f, "struct({})", structref.name),
+            Type::Name => write!(f, "name"),
+            Type::Type => write!(f, "type"),
+            Type::FuncRef => write!(f, "funcref"),
+            Type::StructRef => write!(f, "structref"),
+
+            // modifiers
+            Type::Pointer(t) => write!(f, "*{}", format!("{t}")), // yummy recursion
+        }
+    }
 }
 
 // VEc eXtended
