@@ -4,7 +4,7 @@ use chunks::{Chunk, FuncRef, StructRef, Type};
 use code::{CodeBlock, CodeChunk, Function, Struct};
 use conditional_parsing::ConditionalParsingChunk;
 use data::DataChunk;
-use indexmap::IndexSet;
+use indexmap::{IndexMap, IndexSet};
 use instructions::Instruction;
 use metadata::{Metadata, MetadataChunk};
 use modules::{Extern, Import, Item, ModuleChunk};
@@ -42,14 +42,15 @@ pub struct Wrapper {
     chunk_elements: Vec<usize>,
     raw_chunk_index: usize,
 
-    argument_stack: Vec<Vec<(Type, String)>>,
     module_stack: Vec<String>,
     function_stack: Vec<String>,
+    signature_stack: Vec<(Type, Vec<(Type, String)>)>,
 
     struct_name: String,
     struct_vars: Vec<(Type, String, Option<Data>)>,
 
     metadata_chunk: MetadataChunk,
+    type_cast_chunk: TypeCastChunk,
 }
 
 macro_rules! verify_last_chunk {
@@ -85,7 +86,7 @@ impl Wrapper {
             chunk_elements: Vec::new(),
             raw_chunk_index: 2,
 
-            argument_stack: Vec::new(),
+            signature_stack: Vec::new(),
             module_stack: Vec::new(),
             function_stack: Vec::new(),
 
@@ -93,6 +94,7 @@ impl Wrapper {
             struct_vars: Vec::new(),
             
             metadata_chunk: MetadataChunk { metadata: Vec::new() },
+            type_cast_chunk: TypeCastChunk { type_casts: IndexMap::new() }
         }
     }
 
@@ -142,10 +144,10 @@ impl Wrapper {
         self.instruction_index = self.element_index;
     }
     
-    pub fn function_start(&mut self, name: String, args: Vec<(Type, String)>) {
+    pub fn function_start(&mut self, name: String, return_type: Type, args: Vec<(Type, String)>) {
         verify_last_chunk!(self, Code, format!("create the function `{name}`"));
         self.function_stack.push(name);
-        self.argument_stack.push(args);
+        self.signature_stack.push((return_type, args));
         self.code_begin();
     }
     
@@ -157,7 +159,7 @@ impl Wrapper {
             fox::sinfo!("(did you forget to start the function?)");
             exit(1);
         };
-        let args = if let Some(s) = self.argument_stack.pop() {
+        let signature = if let Some(s) = self.signature_stack.pop() {
             s
         } else {
             fox::scritical!("no function arguments were found while trying to end a function, this is probably a bug");
@@ -181,7 +183,8 @@ impl Wrapper {
 
         let function = Function {
             name: name.clone(),
-            args,
+            ret_type: signature.0,
+            args: signature.1,
             body
         };
 
@@ -245,9 +248,10 @@ impl Wrapper {
         let parent_chunk = verify_last_chunk!(self, Code, format!("create the struct `{name}`"));
         parent_chunk.add_struct(strct);
 
-        StructRef { 
-            module: self.module_stack.clone(), 
-            function: self.function_stack.clone(), 
+        self.element_index += 1;
+        StructRef {
+            module: self.module_stack.clone(),
+            function: self.function_stack.clone(),
             name
         }
     }
@@ -439,6 +443,19 @@ impl Wrapper {
         self.chunk_begin(Chunk::TypeCast(TypeCastChunk::new()));
     }
 
+    pub fn add_type_cast(&mut self, type_a: Type, type_b: Type, func: FuncRef) {
+        self.type_cast_chunk.type_casts.insert((type_a, type_b), func);
+    }
+
+    pub fn add_custom_type_cast(&mut self, type_a: Type, type_b: Type, func: FuncRef) {
+        let chunk = verify_last_chunk!(self, TypeCast, "add type cast function");
+        chunk.type_casts.insert((type_a, type_b), func);
+    }
+
+    pub fn type_cast_end(&mut self) {
+        self.chunk_end();
+    }
+
     // conditional parsing chunk
     pub fn conditional_parsing_begin(&mut self) {
         if self.chunk_stack.len() > 0 {
@@ -451,13 +468,6 @@ impl Wrapper {
     }
 
     // creating runtime constant chunks manually is not supported here, as there is no way to use them
-
-    // all of these `[chunk]_end` functions are just for consistency unless they have more functionality
-    // i feel like a C# dev right now
-
-    pub fn type_cast_end(&mut self) {
-        self.chunk_end();
-    }
 
     pub fn conditional_parsing_end(&mut self) {
         self.chunk_end();
@@ -520,6 +530,7 @@ impl Wrapper {
         }
 
         self.wrapper_core.chunks.push(Chunk::Metadata(self.metadata_chunk));
+        self.wrapper_core.chunks.push(Chunk::TypeCast(self.type_cast_chunk));
 
         self.wrapper_core.emit()
     }

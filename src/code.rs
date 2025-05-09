@@ -132,6 +132,7 @@ impl Struct {
 #[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
+    pub ret_type: Type,
     pub args: Vec<(Type, String)>,
     pub body: CodeChunk,
 }
@@ -141,6 +142,8 @@ impl Function {
         let mut bytes: Vec<u8> = vec![0xFB];
 
         bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));
+
+        bytes.append(&mut self.ret_type.to_bytes(wrapper));
 
         for arg in self.args {
             bytes.append(&mut arg.0.to_bytes(wrapper));
