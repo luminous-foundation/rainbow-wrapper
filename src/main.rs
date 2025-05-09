@@ -25,11 +25,16 @@ pub fn main() {
 
         test.struct_end();
 
-        test.function_start("foo".to_string(), vec![]);
+        test.function_start("foo".to_string(), Type::Void, vec![]);
 
             test.add_metadata("this is a function".to_string());
             
         test.function_end();
+
+        test.function_start("typeCastTest".to_string(), Type::F32, vec![(Type::I32, "val".to_string())]);
+        
+        let func = test.function_end();
+        test.add_type_cast(Type::I32, Type::F32, func);
 
     test.module_end();
     
