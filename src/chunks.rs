@@ -4,6 +4,22 @@ use half::f16;
 
 use crate::{code::CodeChunk, conditional_parsing::ConditionalParsingChunk, data::DataChunk, metadata::MetadataChunk, modules::ModuleChunk, runtime_constants::RuntimeConstantChunk, type_cast::TypeCastChunk, WrapperCore};
 
+// VEc eXtended
+// Allows addition of Vecs to inline vecs
+#[macro_export]
+macro_rules! vex {
+    ($($element:expr),* $(,)? ; $($vec:expr),*) => {{
+        let mut result = Vec::<u8>::new();
+        $(
+            result.push($element);
+        )*
+        $(
+            result.append(&mut $vec);
+        )*
+        result
+    }};
+}
+
 /// The `Chunk` enum
 /// Defines every type of data chunk present in a Rainbow file
 #[derive(Debug, Clone)]
@@ -124,65 +140,64 @@ impl Display for Type {
     }
 }
 
-// VEc eXtended
-// Allows addition of Vecs to inline vecs
-#[macro_export]
-macro_rules! vex {
-    ($($element:expr),* $(,)? ; $($vec:expr),*) => {{
-        let mut result = Vec::<u8>::new();
-        $(
-            result.push($element);
-        )*
-        $(
-            result.append(&mut $vec);
-        )*
-        result
-    }};
-}
-
 impl Type {
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         return match self {
-            Type::UXX(_) | Type::IXX(_) => wrapper.add_data(Data::ComplexType(self.clone())),
-            Type::FXX(_, _) => wrapper.add_data(Data::ComplexType(self.clone())),
-            Type::Struct(r) => wrapper.add_data(Data::StructRef(r.clone())),
+            Type::UXX(_)    => vex![0x05 ; wrapper.add_data(Data::ComplexType(self.clone()))],
+            Type::IXX(_)    => vex![0x0A ; wrapper.add_data(Data::ComplexType(self.clone()))],
+            Type::FXX(_, _) => vex![0x0F ; wrapper.add_data(Data::ComplexType(self.clone()))],
+            Type::Struct(r) => vex![0x10 ; wrapper.add_data(Data::StructRef(r.clone()))],
 
             _ => self.to_bytes_raw(wrapper)
         }
     }
 
-    // TODO (low priority): optimize sizes of numbers to be smallest fit
-    pub fn to_bytes_raw(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
-        return match self {
+    pub fn get_byte(&self) -> Vec<u8> {
+        match self {
             Type::Void       => vec![0x00],
 
             Type::U8         => vec![0x01],
             Type::U16        => vec![0x02],
             Type::U32        => vec![0x03],
             Type::U64        => vec![0x04],
-            Type::UXX(s)     => vex![0x05, 0x08 ; s.to_ne_bytes().to_vec()],
+            Type::UXX(_)     => vec![0x05],
 
             Type::I8         => vec![0x06],
             Type::I16        => vec![0x07],
             Type::I32        => vec![0x08],
             Type::I64        => vec![0x09],
-            Type::IXX(s)     => vex![0x0A, 0x08 ; s.to_ne_bytes().to_vec()],
+            Type::IXX(_)     => vec![0x0A],
 
             Type::F8         => vec![0x0B],
             Type::F16        => vec![0x0C],
             Type::F32        => vec![0x0D],
             Type::F64        => vec![0x0E],
-            Type::FXX(e, m)  => vex![0x0F, 0x08 ; e.to_ne_bytes().to_vec(), vex![0x08 ; m.to_ne_bytes().to_vec()]],
+            Type::FXX(_, _)  => vec![0x0F],
 
-            Type::Struct(r)  => vex![0x10 ; wrapper.add_data(Data::StructRef(r.clone()))],
+            Type::Struct(_)  => vec![0x10],
             Type::Name       => vec![0x11],
             Type::Type       => vec![0x12],
             Type::FuncRef    => vec![0x13],
             Type::StructRef  => vec![0x14],
 
             // modifiers
+            Type::Pointer(_) => vec![0x15],
+        }
+    }
+
+    // TODO (low priority): optimize sizes of numbers to be smallest fit
+    pub fn to_bytes_raw(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
+        match self {
+            Type::UXX(s)     => vex![0x05, 0x08 ; s.to_ne_bytes().to_vec()],
+            Type::IXX(s)     => vex![0x0A, 0x08 ; s.to_ne_bytes().to_vec()],
+            Type::FXX(e, m)  => vex![0x0F, 0x08 ; e.to_ne_bytes().to_vec(), vex![0x08 ; m.to_ne_bytes().to_vec()]],
+            Type::Struct(r)  => vex![0x10 ; wrapper.add_data(Data::StructRef(r.clone()))],
+
+            // modifiers
             Type::Pointer(t) => vex![0x15 ; t.to_bytes_raw(wrapper)],
-        };
+
+            _ => self.get_byte(),
+        }
     }
 }
 
