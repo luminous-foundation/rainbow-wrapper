@@ -37,9 +37,6 @@ pub fn main() {
         test.add_type_cast(Type::I32, Type::F32, func);
 
     test.module_end();
-    
-    test.type_cast_begin();
-    test.type_cast_end();
 
     let bytes = test.emit();
     println!("{:?}", bytes);
