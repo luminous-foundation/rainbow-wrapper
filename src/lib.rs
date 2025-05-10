@@ -2,7 +2,7 @@ use std::process::exit;
 
 use chunks::{Chunk, FuncRef, StructRef, Type};
 use code::{CodeBlock, CodeChunk, Function, Struct};
-use conditional_parsing::ConditionalParsingChunk;
+use conditional_parsing::{Conditional, ConditionalParsingChunk};
 use data::DataChunk;
 use indexmap::{IndexMap, IndexSet};
 use instructions::Instruction;
@@ -51,6 +51,7 @@ pub struct Wrapper {
 
     metadata_chunk: MetadataChunk,
     type_cast_chunk: TypeCastChunk,
+    conditional_parsing: ConditionalParsingChunk,
 }
 
 macro_rules! verify_last_chunk {
@@ -94,7 +95,8 @@ impl Wrapper {
             struct_vars: Vec::new(),
             
             metadata_chunk: MetadataChunk { metadata: Vec::new() },
-            type_cast_chunk: TypeCastChunk { type_casts: IndexMap::new() }
+            type_cast_chunk: TypeCastChunk { type_casts: IndexMap::new() },
+            conditional_parsing: ConditionalParsingChunk { conditional_chunks: Vec::new() },
         }
     }
 
@@ -467,11 +469,18 @@ impl Wrapper {
         self.chunk_begin(Chunk::ConditionalParsing(ConditionalParsingChunk::new()));
     }
 
-    // creating runtime constant chunks manually is not supported here, as there is no way to use them
+    // TODO: figure out a better way of passing in conditionals for better UX
+    //       as of right now it's not a big enough issue to block parser development
+    //       but it should be dealt with at some point
+    pub fn add_conditional_parse(&mut self, conditional: Conditional) {
+        self.conditional_parsing.conditional_chunks.push(conditional_parsing::ConditionalChunk { chunk_id: self.chunk_index, conditional });
+    }
 
     pub fn conditional_parsing_end(&mut self) {
         self.chunk_end();
     }
+
+    // creating runtime constant chunks manually is not supported here, as there is no way to use them
 
     fn chunk_begin(&mut self, chunk: Chunk) {
         self.chunk_elements.push(self.element_index);
