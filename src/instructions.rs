@@ -626,7 +626,6 @@ pub enum Instruction {
     GENTYPE_MODIFY_S_S_S /*pop*/ /*pop*/ /*push*/ ,
 }
 
-// TODO
 #[macro_export]
 macro_rules! number {
     (u8 $v:expr) => {
@@ -656,51 +655,67 @@ macro_rules! number {
     (i8 $v:expr) => {
         {
             let v: i8 = $v;
-            rainbow_wrapper::chinks::Number::I8(v)
+            rainbow_wrapper::chunks::Number::I8(v)
         }
     };
     (i16 $v:expr) => {
         {
             let v: i16 = $v;
-            rainbow_wrapper::chinks::Number::I16(v)
+            rainbow_wrapper::chunks::Number::I16(v)
         }
     };
     (i32 $v:expr) => {
         {
             let v: i32 = $v;
-            rainbow_wrapper::chinks::Number::I32(v)
+            rainbow_wrapper::chunks::Number::I32(v)
         }
     };
     (i64 $v:expr) => {
         {
             let v: i64 = $v;
-            rainbow_wrapper::chinks::Number::I64(v)
+            rainbow_wrapper::chunks::Number::I64(v)
         }
     };
     (f8 $v:expr) => {
         {
             let v: f8 = $v;
-            rainbow_wrapper::chfnks::Number::F8(v)
+            rainbow_wrapper::chunks::Number::F8(v)
         }
     };
     (f16 $v:expr) => {
         {
             let v: f16 = $v;
-            rainbow_wrapper::chfnks::Number::F16(v)
+            rainbow_wrapper::chunks::Number::F16(v)
         }
     };
     (f32 $v:expr) => {
         {
             let v: f32 = $v;
-            rainbow_wrapper::chfnks::Number::F32(v)
+            rainbow_wrapper::chunks::Number::F32(v)
         }
     };
     (f64 $v:expr) => {
         {
             let v: f64 = $v;
-            rainbow_wrapper::chfnks::Number::F64(v)
+            rainbow_wrapper::chunks::Number::F64(v)
         }
     };
+    ($type:expr, $v:expr) => {
+        match $type {
+            Type::U8  => { let v: u8  = $v; rainbow_wrapper::chunks::Number::U8 ($v); }
+            Type::U16 => { let v: u16 = $v; rainbow_wrapper::chunks::Number::U16($v); }
+            Type::U32 => { let v: u32 = $v; rainbow_wrapper::chunks::Number::U32($v); }
+            Type::U64 => { let v: u64 = $v; rainbow_wrapper::chunks::Number::U64($v); }
+            Type::I8  => { let v: i8  = $v; rainbow_wrapper::chunks::Number::I8 ($v); }
+            Type::I16 => { let v: i16 = $v; rainbow_wrapper::chunks::Number::I16($v); }
+            Type::I32 => { let v: i32 = $v; rainbow_wrapper::chunks::Number::I32($v); }
+            Type::I64 => { let v: i64 = $v; rainbow_wrapper::chunks::Number::I64($v); }
+            Type::F8  => { let v: u8  = $v; rainbow_wrapper::chunks::Number::F8 ($v); }
+            Type::F16 => { let v: f16 = $v; rainbow_wrapper::chunks::Number::F16($v); }
+            Type::F32 => { let v: f32 = $v; rainbow_wrapper::chunks::Number::F32($v); }
+            Type::F64 => { let v: f64 = $v; rainbow_wrapper::chunks::Number::F64($v); }
+        }
+    }
 }
 
 // TODO
