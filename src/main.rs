@@ -5,11 +5,13 @@ pub fn main() {
 
     // fun fact: this whole thing is basically untested, i have no idea if the bytes it outputs are correct
     //           i literally just see a bunch of numbers and assume that it looks good
+    test.add_file_import("io.rbb".to_string(), "io".to_string());
+
     test.module_begin("test".to_string());
 
-        test.add_instruction(add!(u8 2, u8 3, "first"));
-        test.add_instruction(add!("first", u8 4, "second"));
-        test.add_instruction(add!(pop, u8 5, "third"));
+        test.add_instruction(add!((Type::U8, 2); (Type::U8, 3); "first"));
+        test.add_instruction(add!("first", (Type::U8, 4); "second"));
+        test.add_instruction(add!(pop, (Type::U8, 5); "third"));
 
         test.code_begin();
 
@@ -40,4 +42,6 @@ pub fn main() {
 
     let bytes = test.emit();
     println!("{:?}", bytes);
+    println!("generated {} bytes", bytes.len());
+    fox::disk::write_bytes("/mnt/f/test.rbb", &bytes).unwrap();
 }

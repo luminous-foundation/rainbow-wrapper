@@ -4,6 +4,7 @@ use chunks::{Chunk, FuncRef, StructRef, Type};
 use code::{CodeBlock, CodeChunk, Function, Struct};
 use conditional_parsing::{Conditional, ConditionalParsingChunk};
 use data::DataChunk;
+use imports::ImportChunk;
 use indexmap::{IndexMap, IndexSet};
 use instructions::Instruction;
 use metadata::{Metadata, MetadataChunk};
@@ -19,6 +20,7 @@ pub mod code;
 pub mod conditional_parsing;
 pub mod data;
 pub mod instructions;
+pub mod imports;
 pub mod metadata;
 pub mod modules;
 pub mod runtime_constants;
@@ -52,6 +54,7 @@ pub struct Wrapper {
     metadata_chunk: MetadataChunk,
     type_cast_chunk: TypeCastChunk,
     conditional_parsing: ConditionalParsingChunk,
+    import_chunk: ImportChunk,
 }
 
 macro_rules! verify_last_chunk {
@@ -97,6 +100,7 @@ impl Wrapper {
             metadata_chunk: MetadataChunk { metadata: Vec::new() },
             type_cast_chunk: TypeCastChunk { type_casts: IndexMap::new() },
             conditional_parsing: ConditionalParsingChunk { conditional_chunks: Vec::new() },
+            import_chunk: ImportChunk { imports: Vec::new() },
         }
     }
 
@@ -480,6 +484,10 @@ impl Wrapper {
         self.chunk_end();
     }
 
+    pub fn add_file_import(&mut self, path: String, name: String) {
+        self.import_chunk.imports.push((path, name));
+    }
+
     // creating runtime constant chunks manually is not supported here, as there is no way to use them
 
     fn chunk_begin(&mut self, chunk: Chunk) {
@@ -540,6 +548,7 @@ impl Wrapper {
 
         self.wrapper_core.chunks.push(Chunk::Metadata(self.metadata_chunk));
         self.wrapper_core.chunks.push(Chunk::TypeCast(self.type_cast_chunk));
+        self.wrapper_core.chunks.push(Chunk::Imports(self.import_chunk));
 
         self.wrapper_core.emit()
     }
