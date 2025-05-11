@@ -2,7 +2,7 @@ use std::{fmt::Display, hash::{Hash, Hasher}};
 
 use half::f16;
 
-use crate::{code::CodeChunk, conditional_parsing::ConditionalParsingChunk, data::DataChunk, metadata::MetadataChunk, modules::ModuleChunk, runtime_constants::RuntimeConstantChunk, type_cast::TypeCastChunk, WrapperCore};
+use crate::{code::CodeChunk, conditional_parsing::ConditionalParsingChunk, data::DataChunk, imports::ImportChunk, metadata::MetadataChunk, modules::ModuleChunk, runtime_constants::RuntimeConstantChunk, type_cast::TypeCastChunk, WrapperCore};
 
 // VEc eXtended
 // Allows addition of Vecs to inline vecs
@@ -31,6 +31,7 @@ pub enum Chunk {
     TypeCast(TypeCastChunk),
     ConditionalParsing(ConditionalParsingChunk),
     RuntimeConstant(RuntimeConstantChunk),
+    Imports(ImportChunk),
 }
 
 impl Chunk {
@@ -44,6 +45,7 @@ impl Chunk {
             Chunk::TypeCast(_)           => bytes.push(0x04),
             Chunk::ConditionalParsing(_) => bytes.push(0x05),
             Chunk::RuntimeConstant(_)    => bytes.push(0x06),
+            Chunk::Imports(_)            => bytes.push(0x07),
         };
 
         let mut sub_one = false;
@@ -55,6 +57,7 @@ impl Chunk {
             Chunk::TypeCast(c)           => c.to_bytes(wrapper),
             Chunk::ConditionalParsing(c) => c.to_bytes(wrapper),
             Chunk::RuntimeConstant(c)    => c.to_bytes(wrapper),
+            Chunk::Imports(c)            => c.to_bytes(wrapper),
         };
 
         if sub_one {
@@ -76,6 +79,7 @@ impl Chunk {
             Chunk::TypeCast(_)           => "TypeCast",
             Chunk::ConditionalParsing(_) => "ConditionalParsing",
             Chunk::RuntimeConstant(_)    => "RuntimeConstant",
+            Chunk::Imports(_)            => "Import",
         }
     }
 }
