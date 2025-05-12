@@ -671,11 +671,11 @@ impl WrapperCore {
         
         // RBB file header
         let mut out: Vec<u8> = b"RBB".to_vec();
-        out.append(&mut MAJOR_VERSION.to_ne_bytes().to_vec());
-        out.append(&mut MINOR_VERSION.to_ne_bytes().to_vec());
-        out.append(&mut PATCH_VERSION.to_ne_bytes().to_vec());
+        out.append(&mut MAJOR_VERSION.to_le_bytes().to_vec());
+        out.append(&mut MINOR_VERSION.to_le_bytes().to_vec());
+        out.append(&mut PATCH_VERSION.to_le_bytes().to_vec());
 
-        out.append(&mut Self::checksum(&body).to_ne_bytes().to_vec());
+        out.append(&mut Self::checksum(&body).to_le_bytes().to_vec());
 
         let endianness = if self.endianness { 1 } else { 0 };
         out.push(endianness);

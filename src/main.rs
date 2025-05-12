@@ -43,5 +43,5 @@ pub fn main() {
     let bytes = test.emit();
     println!("{:?}", bytes);
     println!("generated {} bytes", bytes.len());
-    fox::disk::write_bytes("/mnt/f/test.rbb", &bytes).unwrap();
+    fox::disk::write_bytes("test.rbb", &bytes).unwrap();
 }
