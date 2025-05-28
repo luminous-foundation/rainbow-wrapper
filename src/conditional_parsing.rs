@@ -31,7 +31,7 @@ impl ConditionalChunk {
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut WrapperCore::index_to_bytes(self.chunk_id));
+        bytes.append(&mut WrapperCore::num_to_bytes(self.chunk_id));
         bytes.append(&mut self.conditional.to_bytes(wrapper));
 
         return bytes;

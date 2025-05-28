@@ -46,7 +46,7 @@ impl RuntimeConstant {
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut WrapperCore::index_to_bytes(self.name.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(self.name.len()));
         bytes.append(&mut self.name.as_bytes().to_vec());
         bytes.append(&mut self.typ.to_bytes(wrapper));
         bytes.append(&mut self.default.to_bytes(wrapper));

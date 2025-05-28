@@ -34,21 +34,21 @@ impl Metadata {
 
         match self {
             Metadata::General(key, value) => {
-                bytes.append(&mut WrapperCore::index_to_bytes(key.len()));
+                bytes.append(&mut WrapperCore::num_to_bytes(key.len()));
                 bytes.append(&mut key.as_bytes().to_vec());
-                bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
+                bytes.append(&mut WrapperCore::num_to_bytes(value.len()));
                 bytes.append(&mut value.as_bytes().to_vec());
             }
             Metadata::Byte(chunk, byte_offset, value) => {
-                bytes.append(&mut WrapperCore::index_to_bytes(*chunk));
-                bytes.append(&mut WrapperCore::index_to_bytes(*byte_offset));
-                bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
+                bytes.append(&mut WrapperCore::num_to_bytes(*chunk));
+                bytes.append(&mut WrapperCore::num_to_bytes(*byte_offset));
+                bytes.append(&mut WrapperCore::num_to_bytes(value.len()));
                 bytes.append(&mut value.as_bytes().to_vec());
             }
             Metadata::Element(chunk, element, value) => {
-                bytes.append(&mut WrapperCore::index_to_bytes(*chunk));
-                bytes.append(&mut WrapperCore::index_to_bytes(*element));
-                bytes.append(&mut WrapperCore::index_to_bytes(value.len()));
+                bytes.append(&mut WrapperCore::num_to_bytes(*chunk));
+                bytes.append(&mut WrapperCore::num_to_bytes(*element));
+                bytes.append(&mut WrapperCore::num_to_bytes(value.len()));
                 bytes.append(&mut value.as_bytes().to_vec());
             }
         }

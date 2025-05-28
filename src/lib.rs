@@ -198,9 +198,10 @@ impl Wrapper {
         parent_chunk.add_function(function);
         
         FuncRef { 
-            module: self.module_stack.clone(), 
-            function: self.function_stack.clone(), 
-            name 
+            module: self.module_stack.clone(),
+            function: self.function_stack.clone(),
+            name,
+            is_extern: false,
         }
     }
     
@@ -216,6 +217,11 @@ impl Wrapper {
         self.struct_name = name;
     }
 
+    /// Adds a variable to the current struct
+    ///
+    /// *NOTE:*
+    /// this is *not* to create a variable for the current program
+    /// to do that, use the `var` instruction
     pub fn add_var(&mut self, typ: Type, name: String, default: Option<Data>) {
         match typ {
             Type::Struct(_) => {
@@ -263,6 +269,11 @@ impl Wrapper {
     }
 
     pub fn code_end(&mut self) {
+        if self.function_stack.len() > 0 {
+            fox::serror!("attempted to end code block while there were still functions open");
+            exit(1);
+        }
+
         // get the code chunk off of the chunk stack
         let chunk = self.chunk_stack.pop();
 
@@ -559,6 +570,9 @@ pub struct WrapperCore {
     pub chunks: Vec<Chunk>,
     pub endianness: bool,
 
+    // this one gets modified and has items removed
+    data_queue: IndexSet<Data>,
+    // this one doesnt
     data: IndexSet<Data>,
     runtime_constants: IndexSet<RuntimeConstant>,
 
@@ -569,6 +583,7 @@ impl WrapperCore {
     pub fn new() -> WrapperCore {
         WrapperCore {
             chunks: Vec::new(),
+            data_queue: IndexSet::new(),
             data: IndexSet::new(),
             runtime_constants: IndexSet::new(),
             compressed: false,
@@ -579,7 +594,7 @@ impl WrapperCore {
 
     /// Convert a number into a data section compatible number,
     /// consisting of {size} {bytes}
-    pub fn index_to_bytes(index: usize) -> Vec<u8> {
+    pub fn num_to_bytes(index: usize) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
         // get smallest possible fit and use that
@@ -602,21 +617,26 @@ impl WrapperCore {
 
     pub fn add_data(&mut self, data: Data) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![0x01, 0x00]; // default data section index
-        bytes.append(&mut WrapperCore::index_to_bytes(self.data.len()));
+        if let Some(index) = self.data.get_index_of(&data) {
+            bytes.append(&mut WrapperCore::num_to_bytes(index));
+        } else {
+            bytes.append(&mut WrapperCore::num_to_bytes(self.data.len()));
+            self.data.insert(data.clone());
+            self.data_queue.insert(data);
+        }
 
-        self.data.insert(data);
         return bytes;
     }
 
     pub fn add_chunk(&mut self, chunk: Chunk) -> Vec<u8> {
         self.chunks.push(chunk);
 
-        return WrapperCore::index_to_bytes(self.chunks.len() - 1);
+        return WrapperCore::num_to_bytes(self.chunks.len() - 1);
     }
 
     pub fn add_runtime_constant(&mut self, constant: RuntimeConstant) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
-        bytes.append(&mut WrapperCore::index_to_bytes(constant.name.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(constant.name.len()));
         bytes.append(&mut constant.name.as_bytes().to_vec());
 
         self.runtime_constants.insert(constant);
@@ -662,7 +682,15 @@ impl WrapperCore {
         self.chunks[0] = Chunk::Data(DataChunk::from_set(&self.data));
         self.chunks[1] = Chunk::RuntimeConstant(RuntimeConstantChunk::from_set(&self.runtime_constants));
         let mut pre_body: Vec<u8> = Vec::new();
-        pre_body.append(&mut self.chunks[0].clone().to_bytes(&mut self));
+
+        let mut data_bytes: Vec<u8> = Vec::new();
+        while self.data_queue.len() > 0 {
+            data_bytes.append(&mut self.data_queue.shift_remove_index(0).unwrap().to_bytes(&mut self));
+        }
+        pre_body.push(0x02);
+        pre_body.append(&mut WrapperCore::num_to_bytes(data_bytes.len()));
+        pre_body.append(&mut data_bytes);
+
         pre_body.append(&mut self.chunks[1].clone().to_bytes(&mut self));
 
         let mut body = Vec::new();
@@ -689,7 +717,7 @@ impl WrapperCore {
             out.push(0);
         }
 
-        out.append(&mut WrapperCore::index_to_bytes(body.len()));
+        out.append(&mut WrapperCore::num_to_bytes(body.len()));
 
         out.append(&mut body);
 

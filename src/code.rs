@@ -107,11 +107,11 @@ impl Struct {
 
         bytes.push(0xFD);
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name)));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.name)));
 
         for var in self.vars {
             bytes.append(&mut var.0.to_bytes(wrapper));
-            bytes.append(&mut wrapper.add_data(Data::Name(var.1)));
+            bytes.append(&mut wrapper.add_data(Data::Text(var.1)));
 
             match var.0 {
                 Type::Struct(_) => {},
@@ -141,13 +141,13 @@ impl Function {
     pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![0xFB];
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.name.clone())));
 
         bytes.append(&mut self.ret_type.to_bytes(wrapper));
 
         for arg in self.args {
             bytes.append(&mut arg.0.to_bytes(wrapper));
-            bytes.append(&mut wrapper.add_data(Data::Name(arg.1.clone())));
+            bytes.append(&mut wrapper.add_data(Data::Text(arg.1.clone())));
         }
 
         bytes.push(0xFA);

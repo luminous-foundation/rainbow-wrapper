@@ -1,4 +1,4 @@
-use rainbow_wrapper::{add, chunks::Type, instructions::Instruction, je, jge, number, Data, Wrapper};
+use rainbow_wrapper::{add, chunks::Type, instructions::Instruction, je, jge, number, Data, var, Wrapper};
 
 pub fn main() {
     let mut test = Wrapper::new();
@@ -8,6 +8,10 @@ pub fn main() {
     test.add_file_import("io.rbb".to_string(), "io".to_string());
 
     test.module_begin("test".to_string());
+
+        test.add_instruction(var!(Type::UXX(31);   "uXXTest"));
+        test.add_instruction(var!(Type::IXX(2);    "iXXTest"));
+        test.add_instruction(var!(Type::FXX(1, 0); "fXXTest"));
 
         test.add_instruction(add!((Type::U8, 2); (Type::U8, 3); "first"));
         test.add_instruction(add!("first", (Type::U8, 4); "second"));
@@ -30,15 +34,20 @@ pub fn main() {
         test.function_start("foo".to_string(), Type::Void, vec![]);
 
             test.add_metadata("this is a function".to_string());
-            
+
         test.function_end();
 
         test.function_start("typeCastTest".to_string(), Type::F32, vec![(Type::I32, "val".to_string())]);
-        
+
         let func = test.function_end();
         test.add_type_cast(Type::I32, Type::F32, func);
 
     test.module_end();
+
+    // test.code_begin();
+    //     test.function_start("foo".to_string(), Type::Void, vec![]);
+    //     test.function_end();
+    // test.code_end();
 
     let bytes = test.emit();
     println!("{:?}", bytes);

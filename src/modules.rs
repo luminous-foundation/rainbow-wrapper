@@ -57,7 +57,7 @@ impl ModuleChunk {
     pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
         
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name)));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.name)));
         
         if self.has_parent {
             bytes.push(0x01);
@@ -80,7 +80,7 @@ impl ModuleChunk {
         }
 
         bytes.push(0x00);
-        bytes.append(&mut WrapperCore::index_to_bytes(blocks.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(blocks.len()));
         bytes.append(&mut blocks);
 
         let mut imports: Vec<u8> = Vec::new();
@@ -89,7 +89,7 @@ impl ModuleChunk {
         }
 
         bytes.push(0x01);
-        bytes.append(&mut WrapperCore::index_to_bytes(imports.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(imports.len()));
         bytes.append(&mut imports);
 
         let mut exports: Vec<u8> = Vec::new();
@@ -98,7 +98,7 @@ impl ModuleChunk {
         }
 
         bytes.push(0x02);
-        bytes.append(&mut WrapperCore::index_to_bytes(exports.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(exports.len()));
         bytes.append(&mut exports);
 
         let mut externs: Vec<u8> = Vec::new();
@@ -107,7 +107,7 @@ impl ModuleChunk {
         }
 
         bytes.push(0x03);
-        bytes.append(&mut WrapperCore::index_to_bytes(externs.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(externs.len()));
         bytes.append(&mut externs);
 
         return bytes;
@@ -135,15 +135,15 @@ impl Import {
 
         match self {
             Import::ModuleImport { path, name, as_name } => {
-                bytes.append(&mut wrapper.add_data(Data::Name(path)));
-                bytes.append(&mut wrapper.add_data(Data::Name(name)));
-                bytes.append(&mut wrapper.add_data(Data::Name(as_name)));
+                bytes.append(&mut wrapper.add_data(Data::Text(path)));
+                bytes.append(&mut wrapper.add_data(Data::Text(name)));
+                bytes.append(&mut wrapper.add_data(Data::Text(as_name)));
             }
             Import::ItemImport { path, name, item, as_name } => {
-                bytes.append(&mut wrapper.add_data(Data::Name(path)));
-                bytes.append(&mut wrapper.add_data(Data::Name(name)));
+                bytes.append(&mut wrapper.add_data(Data::Text(path)));
+                bytes.append(&mut wrapper.add_data(Data::Text(name)));
                 bytes.append(&mut item.to_bytes(wrapper));
-                bytes.append(&mut wrapper.add_data(Data::Name(as_name)));
+                bytes.append(&mut wrapper.add_data(Data::Text(as_name)));
             }
         }
 
@@ -163,7 +163,7 @@ impl Item {
         match self {
             Item::Function(func_ref) => wrapper.add_data(Data::FuncRef(func_ref)),
             Item::Struct(struct_ref) => wrapper.add_data(Data::StructRef(struct_ref)),
-            Item::Variable(name)     => wrapper.add_data(Data::Name(name))
+            Item::Variable(name)     => wrapper.add_data(Data::Text(name))
         }
     }
 }
@@ -180,15 +180,15 @@ impl Extern {
     pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.path)));
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name)));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.path)));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.name)));
 
         for arg in &self.args {
             bytes.append(&mut arg.to_bytes(wrapper));
         }
         bytes.push(0xFA);
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.as_name)));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.as_name)));
 
         return bytes;
     }

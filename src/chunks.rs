@@ -61,9 +61,9 @@ impl Chunk {
         };
 
         if sub_one {
-            bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len() - 1));
+            bytes.append(&mut WrapperCore::num_to_bytes(chunk_bytes.len() - 1));
         } else {
-            bytes.append(&mut WrapperCore::index_to_bytes(chunk_bytes.len()));
+            bytes.append(&mut WrapperCore::num_to_bytes(chunk_bytes.len()));
         }
         bytes.append(&mut chunk_bytes);
 
@@ -192,13 +192,13 @@ impl Type {
     // TODO (low priority): optimize sizes of numbers to be smallest fit
     pub fn to_bytes_raw(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         match self {
-            Type::UXX(s)     => vex![0x05, 0x08 ; s.to_ne_bytes().to_vec()],
-            Type::IXX(s)     => vex![0x0A, 0x08 ; s.to_ne_bytes().to_vec()],
-            Type::FXX(e, m)  => vex![0x0F, 0x08 ; e.to_ne_bytes().to_vec(), vex![0x08 ; m.to_ne_bytes().to_vec()]],
+            Type::UXX(s)     => vex![0x05, ; wrapper.add_data(Data::Number(Number::U64(*s)))],
+            Type::IXX(s)     => vex![0x0A, ; wrapper.add_data(Data::Number(Number::U64(*s)))],
+            Type::FXX(e, m)  => vex![0x0F, ; wrapper.add_data(Data::Number(Number::U64(*e))), wrapper.add_data(Data::Number(Number::U64(*m)))],
             Type::Struct(r)  => vex![0x10 ; wrapper.add_data(Data::StructRef(r.clone()))],
 
             // modifiers
-            Type::Pointer(t) => vex![0x15 ; t.to_bytes_raw(wrapper)],
+            Type::Pointer(t) => vex![0x15 ; t.to_bytes(wrapper)],
 
             _ => self.get_byte(),
         }
@@ -224,6 +224,30 @@ pub enum Number {
     F32(f32),
     F64(f64),
     FXX(Vec<u8>, u64, u64),
+}
+
+impl Display for Number {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Number::U8(n)  => write!(f, "u8({n:?})"),
+            Number::U16(n) => write!(f, "u16({n:?})"),
+            Number::U32(n) => write!(f, "u32({n:?})"),
+            Number::U64(n) => write!(f, "u64({n:?})"),
+            Number::UXX(n) => write!(f, "uxx({n:?})"),
+
+            Number::I8(n)  => write!(f, "i8({n:?})"),
+            Number::I16(n) => write!(f, "i16({n:?})"),
+            Number::I32(n) => write!(f, "i32({n:?})"),
+            Number::I64(n) => write!(f, "i64({n:?})"),
+            Number::IXX(n) => write!(f, "ixx({n:?})"),
+
+            Number::F8(n)  => write!(f, "f8({n:?})"),
+            Number::F16(n) => write!(f, "f16({n:?})"),
+            Number::F32(n) => write!(f, "f32({n:?})"),
+            Number::F64(n) => write!(f, "f64({n:?})"),
+            Number::FXX(n, _, _) => write!(f, "fxx({n:?})"),
+        }
+    }
 }
 
 impl Number {
@@ -340,11 +364,33 @@ impl Eq for Number {}
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum Data {
     Number(Number),
-    Name(String),
+    Text(String),
     Array(Vec<Data>),
     FuncRef(FuncRef),
     StructRef(StructRef),
     ComplexType(Type),
+}
+
+impl Display for Data {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Data::Number(n)      => write!(f, "{n}"),
+            Data::Text(s)        => write!(f, "\"{s}\""),
+            Data::Array(a)       => {
+                write!(f, "[")?;
+                for i in 0..a.len() {
+                    write!(f, "{}", a[i])?;
+                    if i < a.len() - 1 {
+                        write!(f, ", ")?;
+                    }
+                }
+                write!(f, "]")
+            }
+            Data::FuncRef(r)     => write!(f, "{r}"),
+            Data::StructRef(r)   => write!(f, "{r}"),
+            Data::ComplexType(t) => write!(f, "{t}"),
+        }
+    }
 }
 
 impl Data {
@@ -354,18 +400,19 @@ impl Data {
         match self {
             Data::Number(number) => {
                 bytes.push(0x00);
+                bytes.append(&mut number.get_type().to_bytes(wrapper));
                 bytes.append(&mut number.to_bytes());
             }
-            Data::Name(name) => {
+            Data::Text(name) => {
                 bytes.push(0x01);
-                bytes.append(&mut WrapperCore::index_to_bytes(name.len()));
+                bytes.append(&mut WrapperCore::num_to_bytes(name.len()));
                 bytes.append(&mut name.as_bytes().to_vec());
             }
             // TODO MUST FIX BEFORE PARSER: figure out how to make string constants less dumb
             // probably just make all simple values (numbers lol) stored directly instead of by reference
             Data::Array(values) => {
                 bytes.push(0x02);
-                bytes.append(&mut WrapperCore::index_to_bytes(values.len()));
+                bytes.append(&mut WrapperCore::num_to_bytes(values.len()));
                 for val in values {
                     bytes.append(&mut val.to_bytes(wrapper));
                 }
@@ -390,7 +437,7 @@ impl Data {
     pub fn get_type(&self) -> Type {
         match self {
             Data::Number(n)      => n.get_type(),
-            Data::Name(_)        => Type::Name,
+            Data::Text(_)        => Type::Name,
             Data::Array(d)       => Type::Pointer(Box::new(d[0].get_type())),
             Data::FuncRef(_)     => Type::FuncRef,
             Data::StructRef(_)   => Type::StructRef,
@@ -404,23 +451,50 @@ pub struct FuncRef {
     pub module: Vec<String>,
     pub function: Vec<String>,
     pub name: String,
+    pub is_extern: bool,
+}
+
+impl Display for FuncRef {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_extern {
+            write!(f, "extern ")?;
+        }
+
+        if self.module.len() > 0 {
+            for i in 0..self.module.len() {
+                write!(f, "{}", self.module[i])?;
+                write!(f, ".")?;
+            }
+        }
+
+        if self.function.len() > 0 {
+            for i in 0..self.function.len() {
+                write!(f, "{}", self.function[i])?;
+                write!(f, ".")?;
+            }
+        }
+
+        write!(f, "{}()", self.name)
+    }
 }
 
 impl FuncRef {
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut WrapperCore::index_to_bytes(self.module.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(self.module.len()));
         for name in &self.module {
-            bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
+            let val = &mut wrapper.add_data(Data::Text(name.clone()));
+            bytes.append(val);
         }
         
-        bytes.append(&mut WrapperCore::index_to_bytes(self.function.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(self.function.len()));
         for name in &self.function {
-            bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
+            bytes.append(&mut wrapper.add_data(Data::Text(name.clone())));
         }
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.name.clone())));
+        bytes.push(self.is_extern as u8);
 
         return bytes;
     }
@@ -433,21 +507,41 @@ pub struct StructRef {
     pub name: String,
 }
 
+impl Display for StructRef {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.module.len() > 0 {
+            for i in 0..self.module.len() {
+                write!(f, "{}", self.module[i])?;
+                write!(f, ".")?;
+            }
+        }
+
+        if self.function.len() > 0 {
+            for i in 0..self.function.len() {
+                write!(f, "{}", self.function[i])?;
+                write!(f, ".")?;
+            }
+        }
+
+        write!(f, "{}()", self.name)
+    }
+}
+
 impl StructRef {
     pub fn to_bytes(&self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut WrapperCore::index_to_bytes(self.module.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(self.module.len()));
         for name in &self.module {
-            bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
+            bytes.append(&mut wrapper.add_data(Data::Text(name.clone())));
         }
         
-        bytes.append(&mut WrapperCore::index_to_bytes(self.function.len()));
+        bytes.append(&mut WrapperCore::num_to_bytes(self.function.len()));
         for name in &self.function {
-            bytes.append(&mut wrapper.add_data(Data::Name(name.clone())));
+            bytes.append(&mut wrapper.add_data(Data::Text(name.clone())));
         }
 
-        bytes.append(&mut wrapper.add_data(Data::Name(self.name.clone())));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.name.clone())));
 
         return bytes;
     }
