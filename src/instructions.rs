@@ -977,7 +977,7 @@ impl Instruction {
             Instruction::PDIFF_V_S_S(a)       => vex![0x1A, 0x10 ; wrapper.add_data(Data::Text(a.clone()))],
             Instruction::PDIFF_S_S_S          => vec![0x1A, 0x11],
 
-            // variables 
+            // variables
             Instruction::VAR_T_N(a, b) => vex![0x1B, 0x00 ; a.to_bytes(wrapper), wrapper.add_data(Data::Text(b.clone()))],
             Instruction::VAR_V_N(a, b) => vex![0x1B, 0x01 ; wrapper.add_data(Data::Text(a.clone())), wrapper.add_data(Data::Text(b.clone()))],
             Instruction::VAR_S_N(a)    => vex![0x1B, 0x02 ; wrapper.add_data(Data::Text(a.clone()))],

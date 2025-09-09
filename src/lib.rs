@@ -35,6 +35,7 @@ const PATCH_VERSION: u16 = 0;
 pub struct Wrapper {
     pub wrapper_core: WrapperCore,
 
+    // TODO: investigate the element index since i do not trust it
     pub chunk_index: usize,
     pub element_index: usize,
     pub instruction_index: usize, // technically the same as `element_index`, but i think it's good to have names that match what the things are
@@ -64,7 +65,7 @@ macro_rules! verify_last_chunk {
             match chunk {
                 Chunk::$type(c) => c,
                 _ => {
-                    fox::serror!("attempted to {} while not in a {} chunk", $action, stringify!($type).to_lowercase());
+                    fox::serror!("attempted to {} while not in a `{}` chunk", $action, stringify!($type).to_lowercase());
                     fox::sinfo!("current chunk is a `{}` chunk", chunk.get_name());
                     exit(1);
                 }
@@ -197,7 +198,7 @@ impl Wrapper {
         let parent_chunk = verify_last_chunk!(self, Code, format!("create the function `{name}`"));
         parent_chunk.add_function(function);
         
-        FuncRef { 
+        FuncRef {
             module: self.module_stack.clone(),
             function: self.function_stack.clone(),
             name,
@@ -207,9 +208,11 @@ impl Wrapper {
     
     pub fn struct_start(&mut self, name: String) {
         if self.struct_vars.len() > 0 {
-            fox::serror!("attempted to start struct {name} while already in one");
-            fox::sinfo!("current struct name is {}", self.struct_name);
+            fox::serror!("attempted to start struct `{name}` while already in one");
+            fox::sinfo!("current struct name is `{}`", self.struct_name);
             fox::sinfo!("(did you forget to end it?)");
+
+            self.struct_name = String::new();
         }
 
         verify_last_chunk!(self, Code, format!("create the struct `{name}`"));
@@ -250,10 +253,12 @@ impl Wrapper {
     pub fn struct_end(&mut self) -> StructRef {
         let name = self.struct_name.clone();
 
-        let strct = Struct { 
-            name: name.clone(), 
+        let strct = Struct {
+            name: name.clone(),
             vars: self.struct_vars.clone() 
         };
+
+        self.struct_name = String::new();
 
         self.struct_vars.clear();
 
@@ -343,6 +348,7 @@ impl Wrapper {
         self.code_begin();
     }
 
+    // TODO: there is literally no way to get a funcref/structref for these bro
     pub fn add_item_import(&mut self, path: String, name: String, item: Item, as_name: String) {
         let chunk = verify_last_chunk!(self, Module, "add item import");
         chunk.add_import(Import::ItemImport { path, name, item, as_name });
@@ -411,7 +417,7 @@ impl Wrapper {
             if let Some(prev) = prev {
                 match prev {
                     Chunk::Module(c) => c.add_module(chunk),
-                    _ => { fox::scritical!("somehow nested a module block in a non-code block. this is probably a bug"); exit(1); }
+                    _ => { fox::scritical!("somehow nested a module block in a non-module block. this is probably a bug"); exit(1); }
                 }
             } else {
                 self.chunk_index = self.raw_chunk_index;
@@ -541,8 +547,8 @@ impl Wrapper {
 
     pub fn emit(mut self) -> Vec<u8> {
         if self.chunk_stack.len() > 0 {
-            // TODO: better wording needed (what is a "wrapper chunk list"?)
-            fox::swarn!("wrapper chunk list contained unfinished chunks, these chunks will be discarded");
+            fox::swarn!("wrapper detected unfinished chunks, these chunks will be discarded");
+            fox::sinfo!("this may cause your program to not parse correctly");
             
             let mut chunks = String::new();
             let mut i = 0;
@@ -557,9 +563,33 @@ impl Wrapper {
             fox::sinfo!("contained [{chunks}]");
         }
 
-        self.wrapper_core.chunks.push(Chunk::Metadata(self.metadata_chunk));
-        self.wrapper_core.chunks.push(Chunk::TypeCast(self.type_cast_chunk));
-        self.wrapper_core.chunks.push(Chunk::Imports(self.import_chunk));
+        if self.struct_name.len() > 0 {
+            fox::swarn!("wrapper detected unfinished struct `{}`, this struct will be discarded", self.struct_name);
+
+            let mut vars = String::new();
+            let mut i = 0;
+            for (typ, name, _) in &self.struct_vars {
+                vars += &format!("{typ} {name}");
+                if i < self.struct_vars.len() - 1 {
+                    vars += ", ";
+                }
+                i += 1;
+            }
+
+            fox::sinfo!("had fields [{vars}]");
+        }
+
+        if self.metadata_chunk.metadata.len() > 0 {
+            self.wrapper_core.chunks.push(Chunk::Metadata(self.metadata_chunk));
+        }
+
+        if self.type_cast_chunk.type_casts.len() > 0 {
+            self.wrapper_core.chunks.push(Chunk::TypeCast(self.type_cast_chunk));
+        }
+
+        if self.import_chunk.imports.len() > 0 {
+            self.wrapper_core.chunks.push(Chunk::Imports(self.import_chunk));
+        }
 
         self.wrapper_core.emit()
     }

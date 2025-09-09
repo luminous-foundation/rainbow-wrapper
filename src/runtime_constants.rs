@@ -1,6 +1,6 @@
 use indexmap::IndexSet;
 
-use crate::{chunks::{Data, Number, Type}, WrapperCore};
+use crate::{chunks::{Data, Number}, WrapperCore};
 
 #[derive(Debug, Clone)]
 pub struct RuntimeConstantChunk {
@@ -26,7 +26,7 @@ impl RuntimeConstantChunk {
 
     pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
         let mut bytes: Vec<u8> = Vec::new();
-    
+        
         for constant in self.constants {
             bytes.append(&mut constant.to_bytes(wrapper));
         }
@@ -38,7 +38,6 @@ impl RuntimeConstantChunk {
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct RuntimeConstant {
     pub name: String,
-    pub typ: Type,
     pub default: Constant,
 }
 
@@ -47,8 +46,7 @@ impl RuntimeConstant {
         let mut bytes: Vec<u8> = Vec::new();
 
         bytes.append(&mut WrapperCore::num_to_bytes(self.name.len()));
-        bytes.append(&mut self.name.as_bytes().to_vec());
-        bytes.append(&mut self.typ.to_bytes(wrapper));
+        bytes.append(&mut wrapper.add_data(Data::Text(self.name.clone())));
         bytes.append(&mut self.default.to_bytes(wrapper));
 
         return bytes;

@@ -53,7 +53,7 @@ impl Chunk {
             Chunk::Code(c)               => { sub_one = true; c.to_bytes(wrapper) },
             Chunk::Module(c)             => { sub_one = true; c.to_bytes(wrapper) },
             Chunk::Data(c)               => c.to_bytes(wrapper),
-            Chunk::Metadata(c)           => c.to_bytes(),
+            Chunk::Metadata(c)           => c.to_bytes(wrapper),
             Chunk::TypeCast(c)           => c.to_bytes(wrapper),
             Chunk::ConditionalParsing(c) => c.to_bytes(wrapper),
             Chunk::RuntimeConstant(c)    => c.to_bytes(wrapper),
@@ -195,7 +195,7 @@ impl Type {
             Type::UXX(s)     => vex![0x05, ; wrapper.add_data(Data::Number(Number::U64(*s)))],
             Type::IXX(s)     => vex![0x0A, ; wrapper.add_data(Data::Number(Number::U64(*s)))],
             Type::FXX(e, m)  => vex![0x0F, ; wrapper.add_data(Data::Number(Number::U64(*e))), wrapper.add_data(Data::Number(Number::U64(*m)))],
-            Type::Struct(r)  => vex![0x10 ; wrapper.add_data(Data::StructRef(r.clone()))],
+            Type::Struct(r)  => vex![0x10, ; wrapper.add_data(Data::StructRef(r.clone()))],
 
             // modifiers
             Type::Pointer(t) => vex![0x15 ; t.to_bytes(wrapper)],

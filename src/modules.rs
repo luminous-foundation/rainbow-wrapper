@@ -65,50 +65,57 @@ impl ModuleChunk {
             bytes.push(0x00);
         }
 
-        let mut blocks: Vec<u8> = Vec::new();
-
         if let Some(chunk) = self.code_chunk {
-            blocks.append(&mut wrapper.add_chunk(Chunk::Code(chunk)));
+            bytes.append(&mut wrapper.add_chunk(Chunk::Code(chunk)));
         } else {
             fox::scritical!("encountered a module chunk with no associated code chunk");
             fox::scritical!("this is likely a bug");
             exit(1);
         }
-        
-        for module in self.submodules {
-            blocks.append(&mut wrapper.add_chunk(Chunk::Module(module))); 
+
+        if self.submodules.len() > 0 {
+            let mut blocks: Vec<u8> = Vec::new();
+            for module in self.submodules {
+                blocks.append(&mut wrapper.add_chunk(Chunk::Module(module))); 
+            }
+
+            bytes.push(0x00);
+            bytes.append(&mut WrapperCore::num_to_bytes(blocks.len()));
+            bytes.append(&mut blocks);
         }
 
-        bytes.push(0x00);
-        bytes.append(&mut WrapperCore::num_to_bytes(blocks.len()));
-        bytes.append(&mut blocks);
+        if self.imports.len() > 0 {
+            let mut imports: Vec<u8> = Vec::new();
+            for import in self.imports {
+                imports.append(&mut import.to_bytes(wrapper));
+            }
 
-        let mut imports: Vec<u8> = Vec::new();
-        for import in self.imports {
-            imports.append(&mut import.to_bytes(wrapper));
+            bytes.push(0x01);
+            bytes.append(&mut WrapperCore::num_to_bytes(imports.len()));
+            bytes.append(&mut imports);
         }
 
-        bytes.push(0x01);
-        bytes.append(&mut WrapperCore::num_to_bytes(imports.len()));
-        bytes.append(&mut imports);
+        if self.exports.len() > 0 {
+            let mut exports: Vec<u8> = Vec::new();
+            for export in self.exports {
+                exports.append(&mut export.to_bytes(wrapper));
+            }
 
-        let mut exports: Vec<u8> = Vec::new();
-        for export in self.exports {
-            exports.append(&mut export.to_bytes(wrapper));
+            bytes.push(0x02);
+            bytes.append(&mut WrapperCore::num_to_bytes(exports.len()));
+            bytes.append(&mut exports);
         }
 
-        bytes.push(0x02);
-        bytes.append(&mut WrapperCore::num_to_bytes(exports.len()));
-        bytes.append(&mut exports);
+        if self.externs.len() > 0 {
+            let mut externs: Vec<u8> = Vec::new();
+            for item in self.externs {
+                externs.append(&mut item.to_bytes(wrapper));
+            }
 
-        let mut externs: Vec<u8> = Vec::new();
-        for item in self.externs {
-            externs.append(&mut item.to_bytes(wrapper));
+            bytes.push(0x03);
+            bytes.append(&mut WrapperCore::num_to_bytes(externs.len()));
+            bytes.append(&mut externs);
         }
-
-        bytes.push(0x03);
-        bytes.append(&mut WrapperCore::num_to_bytes(externs.len()));
-        bytes.append(&mut externs);
 
         return bytes;
     }
@@ -118,13 +125,13 @@ impl ModuleChunk {
 pub enum Import {
     ModuleImport {
         path: String,
-        name: String, 
+        name: String,
         as_name: String
     },
     ItemImport {
-        path: String, 
-        name: String, 
-        item: Item, 
+        path: String,
+        name: String,
+        item: Item,
         as_name: String
     },
 }
@@ -172,6 +179,7 @@ impl Item {
 pub struct Extern {
     pub path: String,
     pub name: String,
+    pub ret_type: Type,
     pub args: Vec<Type>,
     pub as_name: String,
 }
@@ -183,10 +191,12 @@ impl Extern {
         bytes.append(&mut wrapper.add_data(Data::Text(self.path)));
         bytes.append(&mut wrapper.add_data(Data::Text(self.name)));
 
+        bytes.append(&mut self.ret_type.to_bytes(wrapper));
+
+        bytes.append(&mut WrapperCore::num_to_bytes(self.args.len()));
         for arg in &self.args {
             bytes.append(&mut arg.to_bytes(wrapper));
         }
-        bytes.push(0xFA);
 
         bytes.append(&mut wrapper.add_data(Data::Text(self.as_name)));
 

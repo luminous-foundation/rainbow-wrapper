@@ -69,12 +69,16 @@ impl CodeBlock {
         let mut bytes: Vec<u8> = Vec::new();
         match self {
             CodeBlock::Code(instructions) => {
+                let mut instruction_bytes = Vec::new();
                 for instruction in instructions {
-                    bytes.append(&mut instruction.to_bytes(wrapper));
+                    instruction_bytes.append(&mut instruction.to_bytes(wrapper));
                 }
+                bytes.push(0x00);
+                bytes.append(&mut WrapperCore::num_to_bytes(instruction_bytes.len()));
+                bytes.append(&mut instruction_bytes);
             }
             CodeBlock::Scope(chunk) => {
-                bytes.push(0xFF);
+                bytes.push(0x01);
                 bytes.append(&mut wrapper.add_chunk(Chunk::Code(chunk.clone())));
             }
         }
@@ -90,7 +94,7 @@ pub struct Struct {
 
 impl Struct {
     pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
-        let mut bytes: Vec<u8> = Vec::new();
+        let mut struct_bytes: Vec<u8> = Vec::new();
 
         // sanity check, as technically bad data could make it here
         for var in &self.vars {
@@ -105,25 +109,27 @@ impl Struct {
             }
         }
 
-        bytes.push(0xFD);
-
-        bytes.append(&mut wrapper.add_data(Data::Text(self.name)));
+        struct_bytes.append(&mut wrapper.add_data(Data::Text(self.name)));
 
         for var in self.vars {
-            bytes.append(&mut var.0.to_bytes(wrapper));
-            bytes.append(&mut wrapper.add_data(Data::Text(var.1)));
+            struct_bytes.append(&mut var.0.to_bytes(wrapper));
+            struct_bytes.append(&mut wrapper.add_data(Data::Text(var.1)));
 
             match var.0 {
                 Type::Struct(_) => {},
                 _ => {
                     if let Some(default) = var.2 {
-                        bytes.append(&mut wrapper.add_data(default));
+                        struct_bytes.append(&mut wrapper.add_data(default));
                     }
                 }
             }
         }
 
-        bytes.push(0xFC);
+        let mut bytes = Vec::new();
+
+        bytes.push(0x02);
+        bytes.append(&mut WrapperCore::num_to_bytes(struct_bytes.len()));
+        bytes.append(&mut struct_bytes);
 
         return bytes;
     }
@@ -139,22 +145,23 @@ pub struct Function {
 
 impl Function {
     pub fn to_bytes(self, wrapper: &mut WrapperCore) -> Vec<u8> {
-        let mut bytes: Vec<u8> = vec![0xFB];
+        let mut function_bytes: Vec<u8> = Vec::new();
 
-        bytes.append(&mut wrapper.add_data(Data::Text(self.name.clone())));
+        function_bytes.append(&mut wrapper.add_data(Data::Text(self.name.clone())));
 
-        bytes.append(&mut self.ret_type.to_bytes(wrapper));
+        function_bytes.append(&mut self.ret_type.to_bytes(wrapper));
 
+        function_bytes.append(&mut WrapperCore::num_to_bytes(self.args.len()));
         for arg in self.args {
-            bytes.append(&mut arg.0.to_bytes(wrapper));
-            bytes.append(&mut wrapper.add_data(Data::Text(arg.1.clone())));
+            function_bytes.append(&mut arg.0.to_bytes(wrapper));
+            function_bytes.append(&mut wrapper.add_data(Data::Text(arg.1.clone())));
         }
 
-        bytes.push(0xFA);
+        function_bytes.append(&mut wrapper.add_chunk(Chunk::Code(self.body)));
 
-        bytes.push(0xFF);
-        bytes.append(&mut wrapper.add_chunk(Chunk::Code(self.body)));
-        bytes.push(0xFE);
+        let mut bytes = Vec::new();
+        bytes.push(0x03);
+        bytes.append(&mut function_bytes);
 
         return bytes;
     }
